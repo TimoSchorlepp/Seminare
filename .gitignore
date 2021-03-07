@@ -1,0 +1,13 @@
+*.aux
+*.sh
+*.log
+*.bib
+*.bbl
+*.toc
+*.bcf
+*.blg
+*.out
+*.xml
+*.pygstyle
+*.npy
+figures/
