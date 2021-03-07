@@ -1,0 +1,174 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0. in}
+\setlength{\evensidemargin}{-0 in}
+\setlength{\topmargin}{-0. in}
+\setlength{\textwidth}{7 in}
+\setlength{\textheight}{8.4 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.05 in}
+
+\usepackage{amsmath,amsfonts,graphicx,amsthm}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{enumerate}
+\usepackage{xcolor}
+\usepackage{todonotes}
+\usepackage[left=2cm,right=2cm,top=3cm,bottom=2cm,]{geometry}
+
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+
+\setcounter{lecnum}{11}
+
+\newcommand{\head}{
+   \pagestyle{myheadings}
+   \thispagestyle{plain}
+   \newpage
+   \setcounter{page}{1}
+   \noindent
+   \begin{center}
+   \framebox{
+      \vbox{\vspace{2mm}
+    \hbox to 6.28in { {\bf Seminar zur Stochastik SoSe 2019
+	\hfill Ruhr-Universität Bochum,  24.06.2019} }
+       \vspace{4mm}
+       \hbox to 6.28in { {\Large \hfill 11. Vage Konvergenz von Punktmaßen \hfill} }
+       \vspace{2mm}
+       \hbox to 6.28in { {\it Kurzzusammenfassung \hfill von Timo Schorlepp} }
+      \vspace{2mm}}
+   }
+   \end{center}
+}
+
+\renewcommand{\cite}[1]{[#1]}
+\def\beginrefs{\begin{list}%
+        {[\arabic{equation}]}{\usecounter{equation}
+         \setlength{\leftmargin}{2.0truecm}\setlength{\labelsep}{0.4truecm}%
+         \setlength{\labelwidth}{1.6truecm}}}
+\def\endrefs{\end{list}}
+\def\bibentry#1{\item[\hbox{[#1]}]}
+
+\newtheorem{theorem}{Satz}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Behauptung}
+\newtheorem{corollary}[theorem]{Korollar}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Bemerkung}
+\newtheorem{definition}[theorem]{Definition}
+%\newenvironment{proof}{{\bf Beweis:}}{\hfill\rule{2mm}{2mm}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\head
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Einleitung:} In diesem Vortrag wollen wir in Vorbereitung auf die Beschäftigung mit schwacher Konvergenz von Punktprozessen den Raum aller Punktmaße auf $E$, bezeichnet mit $M_p(E)$, derart mit einem Konvergenzbegriff ausstatten und dementsprechend topologisieren (''vage Konvergenz/Topologie''), dass $M_p(E)$ zu einem vollständigen, separablen metrischen Raum wird. Dies ist genau das benötigte Setting für die Diskussion von schwacher Konvergenz von Maßen auf $M_p(E)$ (vgl.\ Vorlesung Wahrscheinlichkeitstheorie 1, bspw.\ Skript [3]). Wir werden dabei alle Resultate für den Raum \textit{aller} Radon-Maße $M_+(E)$ formulieren und entsprechende Aussagen für die, wie sich zeigen wird, abgeschlossene Teilmenge $M_p(E)$ folgern. Nach einer Einführung der vagen Topologie werden wir zunächst ein Portmanteau-Theorem zur Charakterisierung von vager Konvergenz, analog zu ähnlichen Resultaten für die schwache Konvergenz, beweisen, und am Ende eine abzählbare Basis der vagen Topologie und eine zugehörige Metrik auf $M_+(E)$ zu finden. Die Darstellung folgt größtenteils [1].
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}
+(Setting)\\
+Sei $E$ ein lokal kompakter, zweitabzählbarer $T_2$-Raum mit Borel-$\sigma$-Algebra $\mathcal{E}$. Bezeichne mit $M_+(E)$ die Menge aller Radon-Maße auf E und wähle
+\begin{align}
+\mathcal{M}_+(E):=\sigma\left(\left\{\left\{\mu \in M_+(E)|\mu(f) \in B \right\}|f \in C_K^+(E),B \in \mathcal{B}\left[0,\infty \right) \right\}\right)
+\end{align}
+als $\sigma$-Algebra auf $M_+(E)$, wobei $C_K^+(E):=\left\{ f:E \to [0,\infty) | f \text{ stetig, } \text{supp}(f) \text{ kompakt}\right\}$ die Menge aller stetigen, nichtnegativen Funktionen mit kompaktem Träger auf $E$ ist und $ev_f(\mu) = \mu(f) := \int_E f \; \mathrm{d}\mu$.
+\end{definition}
+
+\begin{lemma} (Existenz von Höckerfunktionenfolgen, vgl.\ Lemma 10.2 in [3])\\
+(a) Sei $K \subseteq E$ kompakt. Dann existieren kompakte Mengen $K_n \downarrow K$ und eine monoton fallende Folge $(f_n)_{n \in \mathbb{N}}$ mit $f_n \in C_K^+(E) \, \forall \, n \in \mathbb{N}$ mit $1_K \leq f_n \leq 1_{K_n} \downarrow 1_K$.\\
+(b) Sei $G \subseteq E$ offen und relativ kompakt. Dann existieren offene und relativ kompakte Mengen $G_n \uparrow G$ und eine monoton wachsende Folge $(g_n)_{n \in \mathbb{N}}$ mit $g_n \in C_K^+(E) \, \forall \, n \in \mathbb{N}$ mit $1_G \geq g_n \geq 1_{G_n} \uparrow 1_G$.
+\end{lemma}
+
+\begin{proposition} (vgl.\ Satz 10.3 in [3])\\
+$C_K^+(E)$ ist eine trennende Familie für $M_+(E)$, d.\ h.\ für $\mu, \nu \in M_+(E)$ gilt: 
+\begin{align}
+\forall \, f \in C_K^+(E) : \, \mu(f) = \nu(f) \Longrightarrow \mu = \nu.
+\end{align}
+\end{proposition}
+
+\begin{definition} 
+(Vage Konvergenz)\\
+Sei $(\mu_n)_{n \in \mathbb{N}}$ eine Folge in $M_+(E)$ und $\mu \in M_+(E)$. Wir sagen, dass die Folge $(\mu_n)$ vage gegen $\mu$ konvergiert (geschrieben $\mu_n \xrightarrow{v} \mu$), wenn
+$
+\forall f \in C_K^+(E): \; \mu_n(f) \xrightarrow{} \mu(f)
+$.\\
+Wir topologisieren $M_+(E)$ unter diesem Konvergenzbegriff, das heißt eine Subbasis ist gegeben durch Mengen der Form $\left\{\mu \in M_+(E) | s < \mu(f) < t \right\}$ für $f \in C_K^+(E)$ und $s,t \in \mathbb{R}, s < t$, und die vage Topologie ist damit die durch alle Auswertungsabbildungen $ev_f:M_+(E) \to [0,\infty), \mu \mapsto \mu(f)$ induzierte Topologie.
+\end{definition}
+
+\begin{proposition}
+Es gilt $\mathcal{M}_+(E) = \mathcal{B}(M_+(E))$.
+\end{proposition}
+
+\begin{theorem} (Portmanteau-Theorem für vage Konvergenz, vgl.\ Satz 10.6 in [3] für schwache Konvergenz)\\
+Sei $(\mu_n)_{n \in \mathbb{N}}$ eine Folge in $M_+(E)$ und $\mu \in M_+(E)$. Dann sind folgende Aussagen äquivalent:
+\begin{enumerate}[(i)]
+\item $\mu_n \xrightarrow{v} \mu$
+\item $\mu_n(B) \to \mu(B)$ für alle relativ kompakten Mengen $B \in \mathcal{E}$ mit $\mu(\partial B) = 0$.
+\item $\limsup_{n \to \infty} \mu_n(K) \leq \mu(K)$ für alle kompakten $K \in \mathcal{E}$ und $\liminf_{n \to \infty} \mu_n(G) \geq \mu(G)$ für alle offenen, relativ kompakten $G \in \mathcal{E}$.
+\end{enumerate}
+\end{theorem}
+\newpage
+\begin{proposition} (Vage Konvergenz von Punktmaßen)\\
+Sei $(m_n)_{n \in \mathbb{N}}$ eine Folge in $M_p(E)$ und $m \in M_p(E)$. Dann sind folgende Aussagen äquivalent:
+\begin{enumerate}[(i)]
+\item $m_n \xrightarrow{v} m$.
+\item Für alle $B \in \mathcal{E}$ relativ kompakt mit $m(\partial B) = 0$ gibt es für $n \geq n_0(B)$ eine Nummerierung der Punkte von $m_n$ und $m$ in $B$ mit
+\begin{align}
+m_n(\cdot \cap B) = \sum_{i=1}^p \delta_{x_i^{(n)}} \; ; \quad m(\cdot \cap B) = \sum_{i=1}^p \delta_{x_i} \label{eq:pktmass}
+\end{align}
+und $(x_1^{(n)}, \cdots , x_p^{(n)}) \to (x_1, \cdots , x_p)$ in $E^p$.
+\end{enumerate}
+\end{proposition}
+
+\begin{lemma} (Approximation kompakter Mengen durch randlose Mengen)\\
+Sei $K \subset E$ kompakt und $\mu \in M_+(E)$. Dann exisitert eine reelle Folge $\epsilon_n \downarrow 0$ mit $K^{\epsilon_n} \downarrow K$ und $\mu(\partial K^{\epsilon_n} ) = 0 \, \forall n$.
+\end{lemma}
+
+\begin{proposition} 
+Die Menge der Punktmaße $M_p(E)$ ist vage abgeschlossen in  $M_+(E)$.
+\end{proposition}
+
+\begin{proposition}(Relative Kompaktheitskriterien)\\
+Sei $M \subseteq M_+(E)$ oder $M \subseteq M_p(E)$. Dann sind äquivalent:
+\begin{enumerate}[(i)]
+\item $M$ ist vage relativ kompakt.
+\item $\sup_{\mu \in M} \mu(f) < \infty$  für alle $\forall f \in C_K^+(E)$.
+\item $\sup_{\mu \in M} \mu(B) < \infty$ für alle relativ kompakten Mengen $B \in \mathcal{E}$.
+\end{enumerate}
+\end{proposition}
+
+\begin{theorem} (Metrisierbarkeit)\\
+$M_+(E)$ und $M_p(E)$, ausgestattet mit der vagen Topologie, sind metrisierbar zu vollständigen, separablen metrischen Räumen.
+\end{theorem}
+
+\begin{proposition} (Vage Stetigkeit von Abbildungen zwischen Räumen von Maßen)\\
+Seien $E$ und $E'$ zwei lokal kompakte, zweitabzählbare $T_2$-Räume und $T:E \to E'$ eine eigentliche Abbildung. Dann ist $\hat{T}:M_+(E) \to M_+(E'), \mu \mapsto \mu \circ T^{-1}$ stetig. Insbesondere ist also die Einschränkung von $\hat{T}$ auf $M_p(E)$, gegeben durch $\hat{T}\left( \sum_i \delta_{x_i} \right) = \sum_i \delta_{T(x_i)}$, stetig.
+\end{proposition}
+
+\section*{Literatur}
+\beginrefs
+\bibentry{1}{\sc S.~Resnick}, 
+``Extreme Values, Regular Variation and Point Processes''
+{\it Springer-Verlag},
+1987, pp.~139-150.
+\bibentry{2}{\sc O.~Kallenberg}, 
+``Random Measures''
+{\it Elsevier Science \& Technology Books},
+1983
+\bibentry{3}{\sc H.~Dehling}, 
+``Wahrscheinlichkeitstheorie I''
+{\it Vorlesungsskript, Ruhr-Universität},
+2018
+\bibentry{4}{\sc B.~Basrak, H.~Planinić}, 
+``A note on vague convergence of measures''
+{\it arXiv preprint 1803.07024},
+2018
+\bibentry{5}
+Ausführlichere Notizen zum Vortrag:\\https://github.com/TimoSchorlepp/MiscCoursework/tree/master/StochastikSeminar
+\endrefs
+
+\end{document}

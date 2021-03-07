@@ -10,4 +10,10 @@
 *.xml
 *.pygstyle
 *.npy
+*.dvi
+*.ent
+*.gz
+*.mp4
+*.xopp
+*.xopp~
 figures/

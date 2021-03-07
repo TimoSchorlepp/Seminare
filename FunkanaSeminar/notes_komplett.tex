@@ -1,0 +1,904 @@
+\documentclass[twoside]{article}
+\setlength{\oddsidemargin}{0. in}
+\setlength{\evensidemargin}{-0 in}
+\setlength{\topmargin}{-0. in}
+\setlength{\textwidth}{7 in}
+\setlength{\textheight}{8.4 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.05 in}
+
+\usepackage{amsmath,amsfonts,graphicx,amsthm}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{enumerate}
+\usepackage{xcolor}
+\usepackage{todonotes}
+\usepackage{csquotes}
+\usepackage{physics}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage[left=2cm,right=2cm,top=3cm,bottom=2cm,]{geometry}
+\graphicspath{{figures/}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+
+\setcounter{lecnum}{1}
+
+\newcommand{\head}{
+   \pagestyle{myheadings}
+   \thispagestyle{plain}
+   \newpage
+   \setcounter{page}{1}
+   \noindent
+   \begin{center}
+   \framebox{
+      \vbox{\vspace{2mm}
+    \hbox to 6.28in { {\bf Seminar Funktionalanalysis SoSe '20
+	\hfill Ruhr-Universität Bochum,  04.07.2020} }
+       \vspace{4mm}
+       \hbox to 6.28in { {\Large \hfill \thelecnum. 1$d$-Randwertprobleme in schwacher Formulierung\hfill} }
+       \vspace{2mm}
+       \hbox to 6.28in { {\it Vollständige Notizen \hfill von Timo Schorlepp} }
+      \vspace{2mm}}
+   }
+   \end{center}
+}
+
+\renewcommand{\cite}[1]{[#1]}
+\def\beginrefs{\begin{list}%
+        {[\arabic{equation}]}{\usecounter{equation}
+         \setlength{\leftmargin}{2.0truecm}\setlength{\labelsep}{0.4truecm}%
+         \setlength{\labelwidth}{1.6truecm}}}
+\def\endrefs{\end{list}}
+\def\bibentry#1{\item[\hbox{[#1]}]}
+
+\newtheorem{theorem}{Satz}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Behauptung}
+\newtheorem{corollary}[theorem]{Korollar}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Bemerkung}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Beispiel}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+%\newenvironment{proof}{{\bf Beweis:}}{\hfill\rule{2mm}{2mm}}
+\usepackage[colorlinks, linkcolor = blue, citecolor = blue, filecolor = blue, urlcolor = blue]{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\head
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Einleitung}
+In diesem Vortrag wollen wir eine Standard-Vorgehensweise zum Nachweis der Existenz und Eindeutigkeit von Lösungen partieller Differentialgleichungen anhand eines einfachen Beispiels, nämlich eines Randwertproblems für eindimensionale gewöhnliche Differentialgleichungen, kennenlernen. Wir werden dabei konkret unter anderem das einfache Randwertproblem
+\begin{align}
+\begin{cases}
+-u'' + u = f \quad \text{ in } I = (0,1) \text{ mit } f \in C(\bar{I}) \text{ vorgegeben},\\ 
+u(0)=u(1)=0.
+\end{cases} 
+\end{align}
+betrachten und Existenz und Eindeutigkeit einer \textit{klassischen} Lösung $u \in C^2(\bar{I})$ nachweisen. Dazu formulieren wir ein korrespondierendes, \textit{schwaches} Problem
+\begin{align}
+\int_I u'v' + \int_I uv = \int_I fv \quad \forall v \in H_0^1(I)  
+\end{align} 
+mit dem im Folgenden zu spezifizierendem Funktionenraum $H_0^1(I)$, einem sogenannten \textit{Sobolev-Raum}, der \textit{schwach differenzierbare} Funktionen enthält. Das schwache Problem scheint sich dabei durch partielle Integration aus dem ursprünglichen Problem zu ergeben. Das Vorgehen ist dann schematisch einfach: Wir zeigen, dass jede klassische Lösung auch das schwache Problem löst, zeigen Existenz und Eindeutigkeit der Lösung des schwachen Problems für $f \in L^2(I)$ mithilfe von Standard-Sätzen der Funktionalanalysis für Hilberträume (in unserem Fall, in allgemeinerem Rahmen würden wir beispielsweise Variationsprinzipien für reflexive Banachräume nutzen), und folgern, dass eine Lösung des schwachen Problems für $f \in C(\bar{I})$ zweimal stetig differenzierbar sein muss und die ursprüngliche Differentialgleichung samt Randbedingungen löst. Ein Resultat, das wir dabei erhalten werden, ist, dass die Lösungen der Randwertprobleme, die wir betrachten, jeweils ein von der Differentialgleichung und den Randbedingungen abhängiges Funktional minimieren.\\
+
+Allgemein ist dieser Übergang zu Sobolev-Räumen oft von Vorteil, da diese im Gegensatz zum Raum der stetig differenzierbaren Funktionen reflexiv sind und insbesondere der oben genannte Raum $H^1(I)$ (bzw.\ $H^1_0(I)$) ein Hilbertraum ist. Dieser Vortrag setzt keinerlei Vorkenntnisse über Sobolev-Räume voraus, und wir geben deshalb eine ausführliche Einführung der zugehörigen grundlegenden Eigenschaften von $W^{1,p}(I)$ mit $p \in [1,\infty]$ und $I \subseteq \mathbb{R}$. Die Darstellung folgt ziemlich genau Kapitel 8 in [1].
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Grundlegende Eigenschaften von Sobolev-Räumen}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}(Sobolev-Raum $W^{1,p}(I)$)\\
+Sei $I \subseteq \mathbb{R}$ ein offenes Intervall und $p \in [1,\infty]$. Wir definieren den \textit{Sobolev-Raum} $W^{1,p}(I)$ als
+\begin{align}
+W^{1,p}(I) := \left\{u \in L^p(I) \; \mathrel{\Big|} \; \exists \; g \in L^p(I): \; \int_I u \varphi' = - \int_I g \varphi \quad \forall \varphi \in C_c^1(I) \right\}. \label{eq:sobolevdef}
+\end{align}
+Ist $u \in W^{1,p}(I)$, so schreiben wir $u' = g$ für ein solches $g$ aus der Definition in Gleichung (\ref{eq:sobolevdef}) und bezeichnen $g$ als \textit{schwache Ableitung} von $u$. Die stetig differenzierbaren Funktionen mit kompaktem Träger $\varphi \in C_c^1(I)$ nennen wir in diesem Zusammenhang \textit{Testfunktionen}. Wir schreiben insbesondere
+\begin{align}
+H^1(I) := W^{1,2}(I).
+\end{align}
+Auf $W^{1,p}(I)$ definieren wir durch
+\begin{align}
+\norm{u}_{W^{1,p},(1)} = \norm{u}_{L^p} +  \norm{u'}_{L^p}
+\end{align}
+eine Norm und für $1 \leq p < \infty$ durch
+\begin{align}
+\norm{u}_{W^{1,p},(2)} = \left(\norm{u}_{L^p}^p +  \norm{u'}_{L^p}^p\right)^{1/p}
+\end{align}
+eine zweite, äquivalente\footnote{Falls dazu eine Frage kommt: Zum einen lässt sich $(a+b)^p \geq a^p + b^p$ für $a,b \geq 0$ und $p \geq 1$ zeigen, indem man $f:[0,\infty) \to \mathbb{R}$ definiert als $f(x)=(x+b)^p -x^p - b^p$. Dann gilt $f(0)=0$ und $f'(x) \geq 0$ für alle $x \geq 0$, also ist $f$ monoton wachsend und die entsprechende Ungleichung folgt. Andersherum gilt $(a+b)^p \leq 2^{p-1} (a^p + b^p)$, dies folgt sofort aus der Konvexität der Funktion $x \mapsto x^p$ für $x \geq 0$.} Norm. Auf $H^1(I)$ definieren wir ein Skalarprodukt
+\begin{align}
+(u,v)_{H^1} = (u,v)_{L^2} + (u',v')_{L^2} = \int_I uv + u'v'
+\end{align}
+mit zugehöriger Norm
+\begin{align}
+\norm{u}_{H^1} = \norm{u}_{W^{1,2},(2)} = \left(\norm{u}_{L^2}^2 + \norm{u'}_{L^2}^2 \right)^{1/2}.
+\end{align}
+\end{definition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Statt $\varphi \in C_c^1(I)$ hätten wir äquivalent auch $\varphi \in C_c^\infty(I)$ fordern können, da sich für $\varphi \in C_c^1(I)$ mithilfe einer $C_c^\infty$-Diracfolge $\delta_n$ eine $ C_c^\infty(I)$-Folge $(\delta_n * \varphi)_{n \in \mathbb{N}}$ konstruieren lässt mit $\delta_n * \varphi \to \varphi$ in $C^1$.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Funktionen in $W^{1,p}(I)$ sind in der Sprache der Distributionentheorie jene Funktionen $u \in L^p(I)$, deren zugeordnete Distribution $\Phi_u \in {\cal D}'(I)$ eine reguläre distributionelle Ableitung in $L^p(I)$ besitzen.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Die schwache Ableitung ist wohldefiniert in $L^p(I)$: Angenommen zu einem gegebenen $u \in W^{1,p}(I)$ existieren $g_1,g_2 \in L^p(I)$, sodass
+\begin{align*}
+\int_I u \varphi' = - \int_I g_1 \varphi = - \int_I g_2 \varphi \quad \forall \varphi \in C_c^1(I) \Rightarrow \int_I (g_1 - g_2) \varphi = 0 \quad \forall \varphi \in C_c^1(I).
+\end{align*}
+Daraus folgt aber $g_1 = g_2$ fast überall (Korollar 4.24 in [1]; Idee: Wähle $\tilde{\varphi} = \text{sgn}(g_1-g_2)1_K$ für $K \subset I$ kompakt, falte mit $C_c^\infty$-Diracfolge und nutze dominierte Konvergenz, um $\int_I (g_1-g_2) \tilde{\varphi} = \int_K \abs{g_1-g_2} = 0$ zu erhalten).
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark} \label{bem:klas}
+Ist $u \in C^1(I) \cap L^p(I)$ und für die \textit{starke} (d.h.\ im üblichen Sinne der Differentialrechnung) Ableitung $u'$ gilt $u' \in L^p(I)$, so ist $u \in W^{1,p}(I)$ und die schwache und starke Ableitung von $u$ stimmen überein in $L^p(I)$ (folgt aus partieller Integration und dem Verschwinden der dabei auftretenden Randterme für $\varphi \in C_c^1(I)$; falls $I = (a,b)$ mit $-\infty < a < b < \infty$, so muss wegen (Folgen-)Kompaktheit der Träger von $\varphi$ insbesondere in dem Sinne \enquote{vollständig} in $I$ enthalten sein, dass kein Intervall der Form $(a,a+\epsilon]$ oder $[b-\epsilon,b)$ in ihm enthalten ist.) Ist $I$ beschränkt, so gilt $C^1(\bar{I})|_I \subset W^{1,p}(I)$ für alle $p \in [1,\infty]$.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{example}
+Sei $I = (-1,1)$ und $u : I \to \mathbb{R}, \; x \mapsto \abs{x}$. Dann gilt offenbar $u \in L^p(I)$ für alle $p \in [1,\infty]$. Ferner gilt $u \in W^{1,p}(I)$ für alle $p \in [1,\infty]$ mit schwacher Ableitung $u' \in L^p(I)$, $u' = g$ fast überall mit
+\begin{align*}
+g(x) = \begin{cases}
+-1 &\quad \text{ für } -1<x<0\\
+0 &\quad \text{ für } x = 0\\
+1 &\quad \text{ für } 0<x<1
+\end{cases}
+\end{align*}
+Dass dieses $g$ in $L^p(I)$ liegt, ist klar, also bleibt nur für $\varphi \in C_c^1(I)$ zu zeigen, dass 
+\begin{align*}
+\int_I u \varphi' = -\int_{-1}^0 x \varphi'(x) \mathrm{d}x + \int_0^1 x \varphi'(x) \mathrm{d}x = \int_{-1}^0 \varphi(x) \mathrm{d}x - \int_0^1 \varphi(x) \mathrm{d}x = -\int_I g \varphi
+\end{align*}
+Die Randterme bei den partiellen Integrationen sind hier sowieso vernachlässigbar, da insbesondere $x \varphi(x)|_{x=0} = 0$. Eine analoge Rechnung funktioniert aber für beliebige stetige Funktionen in $C(\bar{I})$, die auf $\bar{I}$ stückweise $C^1$ sind. Die oben angegebene Funktion $g$ ist Beispiel für eine Funktion, die in $L^p(I)$ liegt, aber \textit{nicht} in $W^{1,p}(I)$. Gäbe es ein zugehöriges $g' \in L^p(I)$, so müsste per Definition für alle $\varphi \in C_c(I)$ gelten:
+\begin{align*}
+\int_I g' \varphi = - \int_I g \varphi' = \int_{-1}^0 \varphi'(x) \mathrm{d}x - \int_0^1 \varphi'(x)\mathrm{d}x = 2 \varphi(0)
+\end{align*}
+Per Hölder-Ungleichung würde dann also für $g' \in L^p(I)$ und $q \in [1,\infty]$ konjugiert zu $p$ folgen, dass für eine Konstante $c > 0$ gilt:
+\begin{align*}
+\abs{\varphi(0)} \leq c \norm{\varphi}_{L^q} \quad \text{ für alle } \varphi \in C_c^1(I).
+\end{align*}
+Für $q \in [1,\infty)$ ist das aber offensichtlich nicht möglich, da sich leicht eine Folge $\varphi_n$ konstruieren lässt mit Norm $\norm{\varphi_n}_{L^q} \equiv 1$ aber $\varphi_n(0) \to \infty$. \textcolor{red}{Was ist mit $q=\infty$ bzw.\ $p=1$?}
+\end{example}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition}(Allgemeine Eigenschaften von $W^{1,p}(I)$)\\
+Der Raum $W^{1,p}(I)$ ist für alle $p \in [1,\infty]$ ein Banachraum. Für $p \in (1,\infty)$ ist $W^{1,p}(I)$ reflexiv und für $p \in [1,\infty)$ separabel. Insbesondere ist also $H^1(I)$ ein separabler Hilbertraum.
+\end{proposition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}.\\
+\begin{enumerate}
+\item Vollständigkeit: Sei $p \in [1,\infty]$ und $(u_n)_{n \in \mathbb{N}}$ eine Cauchyfolge in $W^{1,p}$. Aus der Definition der Norm folgt sofort, dass dann $(u_n)_{n \in \mathbb{N}}$ und $(u_n')_{n \in \mathbb{N}}$ beide Cauchyfolgen in $L^p(I)$ sind. Da $L^p$-Räume vollständig sind, existieren also $u,u' \in L^p(I)$ mit $u_n \xrightarrow{L^p} u$ und $u_n' \xrightarrow{L^p} u'$, also folgt auch, sofern $u \in W^{1,p}(I)$ mit schwacher Ableitung $u'$, $u_n \xrightarrow{W^{1,p}} u$. Da aber für jedes $n \in \mathbb{N}$ gilt, dass
+\begin{align*}
+\int_I u_n' \varphi = - \int_I u_n \varphi' \quad \forall \varphi \in C^1_c(I),
+\end{align*}
+folgt mit Hölder-Ungleichung
+\begin{align*}
+\abs{\int_I (u_n - u) \varphi'} \leq \norm{u_n-u}_{L^p} \norm{\varphi'}_{L^q} \xrightarrow{n \to \infty} 0 \Rightarrow \int_I u_n \varphi' \xrightarrow{n \to \infty} \int_I u \varphi',
+\end{align*}
+also (analog für $\int_I u_n' \varphi$ vorgehen) $\int_I u' \varphi = - \int_I u \varphi'$ für alle $\forall \varphi \in C^1_c(I)$.
+
+\item Reflexivität: Sei $p \in (1,\infty)$. Dann ist bekanntermaßen (siehe Darstellungssatz von Riesz) $L^p(I)$ reflexiv, also auch der Produktraum $E := L^p(I) \times L^p(I)$ (mit Norm $\norm{(u_1,u_2)}_E = \norm{u_1}_{L^p} + \norm{u_2}_{L^p}$; es gilt allgemein $(X \times Y)^* \cong X^* \times Y^*$ für normierte VR, also überträgt sich Reflexivität auf Produkträume). Definiere die lineare Abbildung $T:W^{1,p}(I) \to E, u \to (u,u')$. Dann ist $T$ offenbar eine Isometrie bezüglich $\norm{\cdot}_{W^{1,p},(1)}$ (insbesondere ist $T$ also auch stetig). Ferner ist $T(W^{1,p}(I))\subset E$ abgeschlossener UVR (ist $(u_n,u_n')_{n \in \mathbb{N}} \in T(W^{1,p}(I))\subset E$ eine konvergente Folge, so ist damit $(u_n)$ auch Cauchyfolge in $W^{1,p}(I)$, also folgt die Aussage mit Teil 1 des Beweises). Nach einem entsprechenden Satz aus der Funktionalanalysisvorlesung (bzw.\ Proposition 3.20 in [1]) ist damit $T(W^{1,p}(I))$ ebenfalls reflexiv, und folglich auch $W^{1,p}(I)$.
+
+\item Separabilität: Sei $p \in [1,\infty)$. Dann ist $L^p(I)$ gemäß einer Übungsaufgabe aus der Vorlesung separabel, also auch der Produktraum $E$ aus Teil 2 des Beweises. Da beliebige Teilmenge separabler metrischer Räume separabel sind (siehe auch Proposition 3.25 in [1]), ist somit $T(W^{1,p}(I))$ separabel und damit auch $W^{1,p}(I)$.
+\end{enumerate}
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Wie wir aus der Vorlesung zur Funktionalanalysis wissen, ist insbesondere Reflexivität eine Eigenschaft, die in Banachräumen viele nützliche Aussagen erlaubt (bspw.\ Banach-Alaoglu/Eberlein-Smulian, Variationsprinzip zur Existenz von Minima). Somit ist dies ein entscheidender Vorteil der Arbeit mit Sobolev-Räumen anstelle von $C^1(I)$. Zur Erinnerung: Der Banachraum $C^1[0,1]$ mit Norm $\norm{f}_{C^1} = \sup_{x \in [0,1]} \abs{f(x)} + \sup_{x \in [0,1]} \abs{f'(x)} $ ist nicht reflexiv nach Banach-Alaoglu; betrachte dazu die beschränkte Folge $(f_n)_{n \in \mathbb{N}} \subset \overline{B_1(0)} \subset C^1[0,1]$ mit $f_n(x) = x^n/2n$. Da schwache Konvergenz in $C^1$ aber punktweise Konvergenz der Funktionen und ihrer Ableitungen impliziert (Auswertungsabbildung stetiges lineares Funktional) und $(f_n')$ punktweise gegen eine unstetige Funktion geht, kann $C^1[0,1]$ nicht reflexiv sein. Alternativ könnte man auch argumentieren, dass $C^1$ separabel ist und $(C^1)^*$ nicht, eben weil die oben erwähnten Auswertungsabbildungen eine überabzählbare Teilmenge bilden, die paarweise einen Abstand von 2 in der Operatornorm haben. In einem reflexiven Raum $X$ ist aber Separabilität von $X$ äquivalent zur Separabilität von $X^*$.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark} \label{bem:konv}
+Wir haben hier die in Zukunft nützliche Aussage bewiesen, dass für $(u_n)_{n \in \mathbb{N}} \subset W^{1,p}(I)$ mit $u_n \xrightarrow{L^p} u$ und $u_n' \xrightarrow{L^p} v$ folgt, dass $u \in W^{1,p}(I)$, $u' = v$ und $u_n \xrightarrow{W^{1,p}} u$. Es genügt für $p \in (1,\infty]$ tatsächlich auch, nur zu fordern, dass $\norm{u_n'}_{L^p}$ beschränkt bleibt statt dass $(u_n')$ in $L^p$ konvergiert, um zu folgern, dass $u \in W^{1,p}(I)$. Für $p=1$ ist das falsch mit Gegenbeispiel $I=(-1,2)$, 
+\begin{align*}
+u_n(x) = \begin{cases}
+nx \quad&, \; 0 < x < \frac{1}{n}\\
+1 \quad&, \; \frac{1}{n}\leq x \leq 1- \frac{1}{n}\\
+(1-x)n \quad&, \; 1-\frac{1}{n} < x < 1\\
+0 \quad&, \; \text{sonst}
+\end{cases}
+\end{align*}
+denn dann gilt $u_n \xrightarrow{L^1} u = 1_{(0,1)}$ und $\norm{u_n'}_{L^1} \equiv 2$, aber $u \not \in W^{1,1}(I)$. 
+\\Um die Aussage für $p \in (1,\infty]$ zu zeigen, brauchen wir Proposition \ref{prop:ungl}: Sei $p \in (1,\infty]$ und $u \in L^p(I)$. Dann ist $u \in W^{1,p}(I)$ genau dann wenn $\abs{\int_I u \varphi'} \leq c \norm{\varphi}_{L^q}$ für alle $\varphi \in C_c^1(I)$ und $q$ konjugiert zu $p$.
+Mit dieser Vorarbeit ist nun der Nachweis der obigen Bemerkung einfach, denn es gilt mit den gegebenen Voraussetzungen
+\begin{align*}
+\abs{\int_I u \varphi '} = \lim_{n \to \infty} \abs{\int_I u_n \varphi'} = \lim_{n \to \infty} \abs{\int_I u_n' \varphi} \leq \sup_{n \in \mathbb{N}} \norm{u_n'}_{L^p} \norm{\varphi}_{L^q} \quad \forall \varphi \in C_c^1(I)
+\end{align*}
+wobei der erste Schritt aus den Überlegungen im Beweis zu Proposition 3.6, Teil 1, folgt, der zweite einfach die Definition der schwachen Ableitung ist und im dritten Schritt dann die $L^p$-Beschränktheit der Folge der schwachen Ableitungen genutzt wird.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} (Stetige Repräsentanten von Funktionen in $W^{1,p}(I)$) \label{thm:stetig}\\
+Sei $u \in W^{1,p}(I)$ mit $p \in [1,\infty]$. Dann existiert eine Funktion $\tilde{u} \in C(\bar{I})$ mit $u = \tilde{u}$ fast überall und 
+\begin{align*}
+\tilde{u}(x) - \tilde{u}(y) = \int_{y}^x u'(t) \mathrm{d}t \quad \forall x,y \in \bar{I}
+\end{align*}
+\end{theorem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Der Satz zeigt damit, dass für jedes $u \in W^{1,p}(I)$, das ja als Äquivalenzklasse von fast überall gleichen Funktionen definiert ist, genau ein stetiger Repräsentant $\tilde{u}$ existiert (Eindeutigkeit folgt, da fast überall gleiche stetige Funktionen gleich sein müssen). Somit können wir in diesem Sinne doch von dem Wert von $u \in W^{1,p}(I)$ für einzelne $x \in \bar{I}$ sprechen, nämlich indem wir $u(x) := \tilde{u}(x)$ definieren. Weiterhin zeigt der Satz, dass für ein $u \in W^{1,p}(I)$, für das die schwache Ableitung eine stetige Repräsentation $u' \in C(\bar{I})$ hat, sofort $\tilde{u} \in C^1(\bar{I})$ folgt.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma}
+Sei $f \in L^1_{\text{loc}}(I) := \left\{f : I \to  \mathbb{R} \;  | \;  f|_K \in \mathcal{L}^1(K) \; \forall K \subset I, K \text{ kompakt}\right\} / \sim$ mit
+\begin{align}
+\int_I f \varphi' = 0 \quad \forall\varphi\in C_c^1(I).
+\end{align}
+Dann existiert ein $C \in \mathbb{R}$ mit $f = C$ fast überall.
+\end{lemma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Wähle ein beliebiges, festes $\psi \in C_c(I)$ mit $\int_I \psi = 1$. Für $w \in C_c(I)$ beliebig definiere $h = w - (\int_I w) \psi$, dann gilt immer noch $h \in C_c(I)$ und $\int_I h = 0$. Somit existiert $\varphi \in C_c^1(I)$ mit $\varphi' = h$ (dass das Integral über $h$ 0 ist, ist wichtig, damit $\varphi$ kompakten Träger hat). Damit folgt nun aus der Voraussetzung des Lemmas, dass
+\begin{align*}
+\int_I f \left(w - \left(\int_I w \right) \psi \right) = \int_I  \left(f - \left(\int_I f \psi \right) \right) w = 0 \quad \forall w \in C_c(I),
+\end{align*}
+also wieder nach [1, Kor.\ 4.24] $f = \left(\int_I f \psi \right) = C $ fast überall.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma}
+Sei $g \in L^1_{\text{loc}}(I)$ und $y_0 \in I$. Setze $v(x) = \int_{y_0}^x g(t) \mathrm{d}t$ für $x \in I$. Dann gilt $v \in C(I)$ und
+\begin{align*}
+\int_I v \varphi' = - \int_I g \varphi \quad \forall \varphi \in C_c^1(I).
+\end{align*}
+\end{lemma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Stetigkeit folgt per majorisierter Konvergenz, Rest nachrechnen mit Fubini: 
+\begin{align*}
+\int_I v \varphi' = \int_I  \left(\int_{y_0}^x g(t) \mathrm{d}t \right) \varphi'(x) \mathrm{d}x = - \int_{a}^{y_0} \int_x^{y_0} g(t) \varphi'(x) \mathrm{d} t \mathrm{d}x + \int_{y_0}^b \int_{y_0}^x g(t) \varphi'(x) \mathrm{d} t \mathrm{d}x\\
+\overset{\text{Fubini}}{=} - \int_{a}^{y_0} g(t) \int_a^{t}  \varphi'(x) \mathrm{d} x \mathrm{d}t + \int_{y_0}^b g(t) \int_{t}^b \varphi'(x) \mathrm{d} x \mathrm{d}t = - \int_I g \varphi
+\end{align*}
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark} \label{bem:stammfkt}
+Das Lemma zeigt, dass, wenn wir mit einer Funktion $g \in L^p$ starten und die Stammfunktion $v$ bilden, diese in $W^{1,p}(I)$ liegt, sofern $v \in L^p$. Da $v$ außerdem stetig ist, ist dies automatisch der Fall sofern $I$ beschränkt ist (\textcolor{red}{Muss ich dafür nicht wissen, was die Funktion auf $\bar{I}$ macht? Ist wahrscheinlich aber egal, und hier gilt eigentlich $v \in C(\bar{I})$})
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Damit nun der Beweis von Satz \ref{thm:stetig}  
+\begin{proof}
+Wähle $y_0 \in I$ und definiere $\bar{u}(x) = \int_{y_0}^x u'(t) \mathrm{d}t$ für $x \in I$. Nach dem vorigen Lemma gilt dann also 
+\begin{align*}
+\int_I \bar{u} \varphi' = - \int_I u' \varphi \quad \forall \varphi \in C_c^1(I),
+\end{align*}
+aber per Definition der schwachen Ableitung folgt dann $\int_I (u - \bar{u}) \varphi' = 0$ für alle $\varphi \in C_c^1(I)$. Das erste Lemma liefert nun also $u - \bar{u} = C \in \mathbb{R}$ fast überall, sodass die Wahl $\tilde{u}(x) = \bar{u}(x) + C$den Anforderungen des Satzes genügt.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition} \label{prop:ungl}
+Sei $u \in L^p$ mit $p \in (1,\infty]$. Dann sind äquivalent:
+\begin{enumerate}[(i)]
+\item $u \in W^{1,p}$
+\item Es exisitiert ein $C \in \mathbb{R}$ mit
+\begin{align*}
+\abs{\int_I u \varphi'} \leq C \norm{\varphi}_{L^q} \quad \forall \varphi \in C_c^1(I),
+\end{align*}
+wobei $q$ der zu $p$ konjugierte Exponent ist. Das $C$ kann als $C = \norm{u'}_{L^p}$ gewählt werden.
+\end{enumerate}
+\end{proposition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}.\\
+$(i) \Rightarrow (ii)$: Die Ungleichung folgt unmittelbar mit Hölder. \\
+$(ii) \Rightarrow (i)$: Für die Rückrichtung betrachten wir die lineare Abbildung $\Phi:C_c^1(I) \to \mathbb{R}, \varphi \mapsto \int_I u \varphi'$, die per Voraussetzung also stetig ist (mit $C_c^1(I) \subset L^q(I)$). Nach Hahn-Banach lässt sich $\Phi$ stetig fortsetzen auf $L^q(I) \supset C_c^1(I)$. Nach Darstellungssatz von Riesz existiert (hier brauchen wir also $p \in (1,\infty]$, d.h.\ $q \in [1,\infty)$) dann aber $\tilde{u} \in L^p(I)$ mit $\Phi(v)= \int_I \tilde{u} v$ für alle $v \in L^q(I)$, d.h.\ insbesondere für alle $\varphi \in C_c^1(I)$: $\int_I u \varphi' = \int_I \tilde{u} \varphi$ und somit $u \in W^{1,p}(I)$ mit $u' = - \tilde{u}$.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Für $p = 1$ bleibt $(i) \Rightarrow (ii)$ natürlich trotzdem wahr, nur die Rückrichtung geht schief. Dazu ein paar \enquote{Funfacts}, ohne Beweis: Für $I$ beschränkt, $p=1$ ist $W^{1,1}(I)$ genau die Menge der absolut stetigen Funktionen auf $I$, d.h.\ $u \in W^{1,1}(I)$ genau dann wenn für alle $\varepsilon > 0$ ein $\delta > 0$ existiert, sodass für jede endliche Menge an disjunkten Intervallen $(a_k,b_k) \subset I$ mit $\sum \abs{b_k - a_k} < \delta$ folgt, dass $\sum \abs{u(b_k)-u(a_k)}< \varepsilon$. Andererseits sind die Funktionen, die $(ii)$ erfüllen, genau die Funktionen mit beschränkter Variation, d.h.\ alle $u:I \to \mathbb{R}$ mit: Es existiert $C \in \mathbb{R}$ sodass für alle $t_0 < t_1 < \dots < t_k$ in $I$ gilt, dass $\sum_{i=0}^{k-1} \abs{u(t_{i+1})-u(t_i)}<C$.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition} \label{prop:linfprop}
+Sei $u \in L^\infty(I)$. Dann gilt $u \in W^{1,\infty}(I)$ genau dann wenn ein $C \geq 0$ existiert mit $\abs{u(x)-u(y)} \leq C \abs{x-y}$ für fast alle $x,y \in I$.
+\end{proposition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Für $u \in W^{1,\infty}(I)$ liefert Satz \ref{thm:stetig}, dass $\abs{u(x)-u(y)} \leq \norm{u'}_{L^\infty} \abs{x-y}$ für fast alle $x,y \in I$. Andersherum wollen wir Proposition \ref{prop:ungl} anwenden. Sei also $\varphi \in C_c^1(I)$. Da $\varphi$ kompakten Träger in $I$ hat, gilt für $h$ klein genug per Substitution 
+\begin{align*}
+\int_I u(x) (\varphi(x-h)-\varphi(x)) \mathrm{d}x = \int_I (u(x+h)-u(x)) \varphi(x) \mathrm{d}x.
+\end{align*}
+also folgt per Voraussetzung
+\begin{align*}
+\abs{\int_I u(x) (\varphi(x-h)-\varphi(x)) \mathrm{d}x } \leq C \abs{h} \norm{\varphi}_{L^1}.
+\end{align*}
+Teilt man dies durch $\abs{h}$, bildet den Grenzwert $h \to 0$ und zieht den Grenzwert mit majorisierter Konvergenz ins Intregral, folgt also $\abs{\int_I u \varphi'} \leq C \norm{\varphi}_{L^1}$ und somit $u \in W^{1,\infty}$.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition} ($L^p$-Version von Proposition \ref{prop:linfprop}) \label{prop:lpprop}\\
+Sei $u \in L^p(\mathbb{R})$ mit $p \in (1,\infty)$. Dann sind folgende Aussagen äquivalent:
+\begin{enumerate}[(i)]
+\item $u \in W^{1,p}(\mathbb{R})$.
+\item Es existiert $C \geq 0$, sodass für alle $h \in \mathbb{R}$ gilt, dass $\norm{\tau_h u - u}_{L^p} \leq C \abs{h}$, wobei $\tau_h$ der Verschiebungsoperator mit $(\tau_h u)(x) = u(x+h)$ ist. Dabei kann $C = \norm{u'}_{L^p}$ gewählt werden.
+\end{enumerate}
+\end{proposition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}.\\
+$(i) \Rightarrow (ii)$: (Beweis funktioniert auch für $p=1$!): Nach Satz \ref{thm:stetig} können wir für all $x, h \in \mathbb{R}$ schreiben:
+\begin{align*}
+u(x+h)-u(x) = \int_x^{x+h} u'(t) \mathrm{d}t = h \int_0^1 u'(x+sh) \mathrm{d}s \Rightarrow \abs{u(x+h)-u(x)} \leq \abs{h}  \int_0^1 \abs{u'(x+sh)} \mathrm{d}s.
+\end{align*}
+Da nach Hölder-Ungleichung $(\int_{[0,1]} \abs{f})^p \leq \int_{[0,1]} \abs{f}^p$ gilt, erhalten wir somit
+\begin{align*}
+\abs{u(x+h)-u(x)}^p \leq \abs{h}^p  \int_0^1 \abs{u'(x+sh)}^p \mathrm{d}s \\
+\Rightarrow \int_\mathbb{R} \abs{u(x+h)-u(x)}^p \mathrm{d}x \leq \abs{h}^p \int_\mathbb{R} \int_0^1 \abs{u'(x+sh)}^p \mathrm{d}s \mathrm{d}x = \abs{h}^p \int_0^1 \int_\mathbb{R} \abs{u'(x+sh)}^p \mathrm{d}x \mathrm{d}s = \abs{h}^p \norm{u'}_{L^p}^p.
+\end{align*}
+$(ii) \Rightarrow (i)$: Wir wollen wieder Proposition \ref{prop:ungl} anwenden. Sei dazu $\varphi \in C_c^1(\mathbb{R})$. Dann gilt analog zum vorigen Beweis
+\begin{align*}
+\int_I u(x) (\varphi(x-h)-\varphi(x)) \mathrm{d}x = \int_I (u(x+h)-u(x)) \varphi(x) \mathrm{d}x.
+\end{align*}
+für alle $h \in \mathbb{R}$, also folgt aus
+\begin{align*}
+\abs{ \int_I (u(x+h)-u(x)) \varphi(x)} \leq \norm{\tau_h u - u}_{L^p} \norm{\varphi}_{L^q} \leq C \abs{h}  \norm{\varphi}_{L^q} \
+\end{align*}
+wieder 
+\begin{align*}
+\abs{\int_I u(x) (\varphi(x-h)-\varphi(x)) \mathrm{d}x} \leq C \abs{h}  \norm{\varphi}_{L^q},
+\end{align*}
+und Division durch $\abs{h}$ und Bilden des Grenzwerts $h \to 0$ vollenden den Beweis.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} (Fortsetzungsoperator auf $\mathbb{R}$) \label{thm:fort}\\
+Sei $p \in [1,\infty]$. Dann existiert ein beschränkter linearer Operator $P:W^{1,p}(I) \to W^{1,p}(\mathbb{R})$, den wir Fortsetzungsoperator nennen, mit den folgenden Eigenschaften:
+\begin{enumerate}[(i)]
+\item $Pu|_I = u$ für alle $u \in W^{1,p}(I)$.
+\item $\norm{Pu}_{L^p(\mathbb{R})} \leq C_1 \norm{u}_{L^{p}(I)}$ für alle $u \in W^{1,p}(I)$.
+\item $\norm{Pu}_{W^{1,p}(\mathbb{R})} \leq C_2 \norm{u}_{W^{1,p}(I)}$ für alle $u \in W^{1,p}(I)$.
+\end{enumerate}
+Dabei hängen die Konstanten $C_1$ und $C_2$ nur von $\abs{I}$ ab und können konkret als $C_1 = 4$ und $C_2 = 4(1+1/\abs{I})$ gewählt werden. 
+\end{theorem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Wir benötigen diesen Satz, da einige wichtige Werkzeuge der Analysis wie die Fourier-Transformation nur auf ganz $\mathbb{R}$ definiert sind, aber ein einfaches Fortsetzen von $u \in W^{1,p}(I)$ auf ganz $\mathbb{R}$ durch $0$ im Allgemeinen nicht mehr in $W^{1,p}(\mathbb{R})$ sein wird (\textcolor{red}{Einfaches Beispiel?}).
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Wir betrachten zunächst den Spezialfall $I=(0,\infty)$ und zeigen, dass die Wahl
+\begin{align*}
+(Pu)(x) = u^*(x) = \begin{cases}
+u(x) \quad &, \; x \geq 0\\
+u(-x) \quad &, \; x < 0
+\end{cases},
+\end{align*}
+d.h.\ Fortsetzung durch Spiegeln zu einer gerade Funktion, alle Anforderungen an unseren Fortsetzungsoperator $P$ erfüllt. Offenbar gilt $\norm{u^*}_{L^p(\mathbb{R})} \leq 2\norm{u}_{L^p(I)}$ (mit Gleichheit für $p < \infty$). Definieren wir
+\begin{align*}
+v(x) = \begin{cases}
+u'(x) \quad &, \; x > 0\\
+-u'(-x) \quad &, \; x < 0
+\end{cases},
+\end{align*}
+so gilt analog $\norm{v}_{L^p(\mathbb{R})} \leq 2\norm{u'}_{L^p(I)}$, d.h.\ $v \in L^p(\mathbb{R})$, und es gilt
+\begin{align*}
+u^*(x)-u^*(0) = \int_0^x v(t) \mathrm{d}t \quad \forall x \i \mathbb{R}.
+\end{align*}
+Somit folgt gemäß Bemerkung \ref{bem:stammfkt}, dass $u^* \in W^{1,p}(\mathbb{R})$ und wir haben schon gezeigt, dass $\norm{u^*}_{W^{1,p}(\mathbb{R})} \leq 2 \norm{u}_{W^{1,p}(I)}$.\\
+Betrachte nun ein beschränktes Intervall $I$ bzw.\ ohne Beschränkung $I = (0,1)$. Wähle eine beliebige, feste Funktion $\eta \in C^1(\mathbb{R})$ mit $0 \leq \eta \leq 1$ und $\eta(x) = 1$ für $x < 1/4$ sowie $\eta(x) = 0$ für $x > 3/4$. Für beliebige Funktionen $f :(0,1) \to \mathbb{R}$ setzen wir $\tilde{f}:(0,\infty)\to \mathbb{R}$,
+\begin{align*}
+\tilde{f}(x) = \begin{cases}
+f(x) \quad &, \; 0<x<1\\
+0 \quad &, \; x > 1
+\end{cases}.
+\end{align*}
+Hilfslemma: Sei $u \in W^{1,p}((0,1))$. Dann gilt $\eta \tilde{u} \in W^{1,p}((0,\infty))$ und $(\eta \tilde{u})' = \eta' \tilde{u} + \eta \tilde{u'}$.\\
+Beweis des Hilfslemmas: Nachzuweisen bleibt nur die schwache Differenzierbarkeit mit der angegebenen Ableitung. Sei also $\varphi \in C_c^1((0,\infty))$. Dann gilt mithilfe der gewöhnlichen Produktregel für $\eta$ und $\varphi$, und $\eta \varphi \in C_c^1((0,1))$
+\begin{align*}
+\int_0^\infty \eta \tilde{u} \varphi' = \int_0^1 \eta u \varphi' = \int_0^1 u ((\eta \varphi)' - \eta ' \varphi) = - \int_0^1 u' \eta \varphi - \int_0^1 u \eta' \varphi = - \int_0^\infty (\eta' \tilde{u} + \eta \tilde{u'}) \varphi.
+\end{align*}
+Mit dem Hilfslemma können wir nun für allgemeines $I$ wie folgt vorgehen: Schreibe für $u \in W^{1,p}(I)$: $u = \eta u + (1- \eta) u$. Die Funktion $\eta u|_{(0,1)}$ setzen wir gemäß Hilfslemma zuerst auf $(0,\infty)$ fort, und dann per Reflexion auf ganz $\mathbb{R}$. Damit erhalten wir eine Fortsetzung $v_1 \in W^{1,p}(\mathbb{R})$ von $\eta u|_{(0,1)}$ mit $\norm{v_1}_{L^p(\mathbb{R})} \leq 2 \norm{u}_{L^p(I)}$ und $\norm{v_1}_{W^{1,p}(\mathbb{R})} \leq C \norm{u}_{W^{1,p}(I)}$, wobei die Konstante von der Wahl unseres $\eta$'s, konkret $\norm{\eta'}_{L^\infty}$, abhängt.  Für $(1-\eta)u$ gehen wir ähnlich vor indem wir die Fortsetzung auf $0$ setzen auf $(-\infty,0)$ und dann per Reflexion an $1$ auf ganz $\mathbb{R}$ fortsetzen. So erhalten wir  $v_2 \in W^{1,p}(\mathbb{R})$ als Fortsetzung von $(1-\eta)u|_{(0,1)}$ mit $\norm{v_2}_{L^p(\mathbb{R})} \leq 2 \norm{u}_{L^p(I)}$ und $\norm{v_2}_{W^{1,p}(\mathbb{R})} \leq C \norm{u}_{W^{1,p}(I)}$, und $Pu := v_1 + v_2$ ist unsere gesuchte Fortsetzung (\textcolor{red}{Mir ist diese Konstruktion noch nicht im Detail klar. Auch die Präsentation in [1] ist etwas verwirrend, weil nicht klar ist, wo das $I$ wie genau aussehen soll. Evtl.\ nochmal genauer anschauen mit konkretem $I$, sofern das im Vortrag wichtig wird!}).
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem}(Dichtheit in $W^{1,p}(I)$) \label{thm:dicht}\\
+Sei $p \in [1,\infty)$. Dann liegt $C_c^\infty(\mathbb{R})|_I \subset W^{1,p}(I)$ dicht, d.h.\ für jedes $u \in W^{1,p}(I)$ existiert eine Folge $(u_n)\subset C_c^\infty(\mathbb{R})$ mit $u_n|_I \to u$ in $W^{1,p}(I)$.
+\end{theorem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Wir schreiben hier bewusst $C_c^\infty(\mathbb{R})|_I$. Beachte, dass $C_c^\infty(I)\subset W^{1,p}(I)$ im Allgemeinen nicht dicht liegt!
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Nach dem Fortsetzungssatz genügt es, $I = \mathbb{R}$ zu betrachten. Der Beweis erfolgt natürlich wie üblich mithilfe von Faltungen, dazu also zunächst folgendes:\\
+
+Hilfslemma: Sei $\rho \in L^1(\mathbb{R})$ und $v \in W^{1,p}(\mathbb{R})$ mit $p \in [1,\infty]$. Dann gilt $\rho * v \in W^{1,p}(\mathbb{R})$ und $(\rho * v)' = \rho * v'$.\\
+Beweis: Nach [1, Satz 4.15] gilt $\rho * v \in L^p(\mathbb{R})$, da $\norm{\rho * v}_{L^p} \leq \norm{\rho}_{L^1} \norm{v}_{L^p}$. Wir nehmen zuerst an, dass $\rho$ kompakten Träger hat, dann gilt für $\varphi \in C_c^1(\mathbb{R})$, dass $\varphi * \rho \in C_c^1(\mathbb{R})$ und deshalb (mit Notation $\check{f}(x) = f(-x)$, sodass für $f \in L^1$, $g \in L^p$, $h \in L^q$ offensichtlich $\int (f*g)h = \int (\check{f}*h) g$ gilt [1, Prop.\ 4.16]):
+\begin{align*}
+\int (\rho * v) \varphi' = \int v (\check{\rho} * \varphi') = \int v (\check{\rho} * \varphi)' = - \int v' (\check{\rho} * \varphi) = - \int (\rho * v') \varphi, 
+\end{align*}
+also $\rho * v \in W^{1,p}(\mathbb{R})$ und $(\rho * v)' = \rho * v'$. Hat $\rho$ keinen kompakten Träger, so wähle eine Folge $(\rho_n)$ in $C_c(\mathbb{R})$ mit $\rho_n \to \rho$ in $L^1(\mathbb{R})$, dann erhalten wir also  $\rho_n * v \in W^{1,p}(\mathbb{R})$ und $(\rho_n * v)' = \rho_n * v'$. Da aber $\rho_n * v \to \rho * v$ und $\rho_n * v' \to \rho * v'$ in $L^p(\mathbb{R})$, da bspw.\ $\norm{\rho_n * v - \rho * v}_{L^p} = \norm{(\rho-\rho_n)*v}_{L^p} \leq \norm{\rho_n-\rho}_{L^1} \norm{v}_{L^p}$, folgt somit mithilfe von Bemerkung \ref{bem:konv} die zu zeigende Aussage.\\
+
+Wir führen noch eine Folge von Cut-off-Funktionen ein: Sei $\zeta$ ein beliebige, feste Funktion in $C_c^\infty(\mathbb{R})$ mit $0 \leq \zeta \leq 1$ und $\zeta(x) = 1$ für $\abs{x} < 1$ und $\zeta(x) = 0$ für $\abs{x} \geq 2$. Definiere dann die Folge $(\zeta_n)$ durch $\zeta_n(x) = \zeta(x/n)$, sodass punktweise $\zeta_n(x) \to 1$ für $n \to \infty$. Ist $f \in L^p(\mathbb{R})$, so folgt per majorisierter Konvergenz mit Majorante $\abs{f}^p$, dass $\zeta_n f \to f$ in $L^p$ für $n \to \infty$.\\
+
+Damit können wir nun den Beweis führen: Sei $u \in W^{1,p}(\mathbb{R})$ beliebig. Wähle eine Dirac-Folge $(\rho_n) \subset C_c^\infty(\mathbb{R})$. Behauptung: Die Folge $(u_n) \in C_c^\infty(\mathbb{R})$ mit $u_n = \zeta_n (\rho_n * u)$ konvergiert in $W^{1,p}(\mathbb{R})$ gegen $u$. Wir zeigen Konvergenz in $L^p$ von $u_n$ und $u_n'$ und nutzen Bemerkung \ref{bem:konv}. Es gilt
+\begin{align*}
+u_n - u = \zeta_n (\rho_n * u) - u = \zeta_n ((\rho_n * u) - u) + (\zeta_n  u - u) \\
+\Rightarrow \norm{u_n - u}_{L^p} \leq \norm{\zeta_n ((\rho_n * u) - u)}_{L^p} + \norm{\zeta_n  u - u}_{L^p} \leq  \norm{(\rho_n * u) - u}_{L^p} + \norm{\zeta_n  u - u}_{L^p} \to 0
+\end{align*} 
+und für die Ableitungen gilt mit dem Hilfslemma
+\begin{align*}
+u_n' = \zeta_n' (\rho_n * u) + \zeta_n (\rho_n * u') \Rightarrow \norm{u_n'-u'}_{L^p} \leq \underbrace{\norm{\zeta_n' (\rho_n * u)}_{L^p}}_{= \left(\int n^{-p} \abs{\zeta'(x/n)}^p (\rho_n * u)(x) \mathrm{d}x \right)^{1/p}}  + \underbrace{\norm{ \zeta_n (\rho_n * u') - u'}_{L^p} }_{\leq \norm{ \zeta_n (\rho_n * u' - u')}_{L^p} +  \norm{ \zeta_n  u' - u'}_{L^p}}\\
+\leq \frac{\norm{\zeta'}_\infty}{n} \norm{\rho_n * u}_{L^p} + \norm{ \rho_n * u' - u'}_{L^p} +  \norm{ \zeta_n  u' - u'}_{L^p} \to 0.
+\end{align*}
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} (Sobolev-Einbettung) \label{thm:einbett}\\
+Es existiert eine nur von $I$ abhängige Konstante $C \geq 0$, sodass
+\begin{align}
+\norm{u}_{L^\infty(I)} \leq C \norm{u}_{W^{1,p}(I)} \quad \forall u \in W^{1,p}(I), \quad \forall p \in [1, \infty]. \label{eq:einbett}
+\end{align}
+Mit anderen Worten: Es gilt $W^{1,p}(I) \subset L^{\infty}(I)$, und diese Inklusion ist stetig. Ferner gilt für $I$ beschränkt:
+\begin{enumerate}[(i)]
+\item Die Inklusion $W^{1,p}(I) \subset C(\bar{I})$ ist kompakt für alle $p \in (1,\infty]$.
+\item Die Inklusion $W^{1,1}(I) \subset L^{p'}(I)$ ist kompakt für alle $p' \in [1,\infty)$.
+\end{enumerate}
+\end{theorem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Wir beweisen Gleichung \ref{eq:einbett} nur für $I = \mathbb{R}$ wegen des Fortsetzungssatzes. Weiterhin ist die Aussage für $p = \infty$ klar, sodass wir uns nur $1 \leq p < \infty$ anschauen müssen. Sei zunächst $v \in C_c^1(\mathbb{R})$ beliebig, und setze für $s \in \mathbb{R}$ $G(s)= \abs{s}^{p-1} s$. Dann gilt $w = G(v) \in C_c^1(\mathbb{R})$ (!) und $w' = p \abs{v}^{p-1} v'$, und somit für alle $x \in \mathbb{R}$:
+\begin{align*}
+G(v(x)) = \int_{-\infty}^x  p \abs{v(t)}^{p-1} v'(t) \mathrm{d}t \Rightarrow \abs{G(v(x))} = \abs{v(x)}^p \leq p \int_\mathbb{R} \abs{v}^{p-1} \abs{v'} \leq p \norm{v}_{L^p}^{p-1} \norm{v'}_{L^p},
+\end{align*}
+wobei der letzte Schritt wieder einmal aus der Hölder-Ungleichung folgt. Somit erhalten wir (mithilfe von Bestimmen von Maximum von $f:[1,\infty) \to \mathbb{R}, x \mapsto x^{1/x}$ bei $x=e$)
+\begin{align*}
+\norm{v}_\infty \leq p^{1/p} \norm{v}_{L^p}^{1-1/p} \norm{v'}_{L^p}^{1/p} \leq e^{1/e} \norm{v}_{L^p}^{1-1/p} \norm{v'}_{L^p}^{1/p} \leq e^{1/e} (\norm{v}_{L^p} + \norm{v'}_{L^p}) = C \norm{v}_{W^{1,p}}.
+\end{align*}
+Die dritte Ungleichung folgt dabei wieder aus etwas Rechnung: Man kann zum Beispiel zeigen, dass für alle $a,b \geq 0, p \geq 1$ gilt: $a^{p-1}b \leq (a+b)^p$, indem man $f(x)=(a+x)^p-a^{p-1}x$ setzt für $x \geq 0$. Dann gilt offenbar $f(0) = a^p \geq 0$, und man zeigt, dass die Funktion ihre lokalen Extrema stets bei $x \leq 0$ annehmen würde und deshalb wegen des asymptotischen Verhaltens $f(x \to \infty) \to \infty$ die gesuchte Ungleichung gilt.\\
+
+Mit dieser Vorarbeit sei nun $u \in W^{1,p}(\mathbb{R})$ beliebig. Wegen des Dichtheitssatzes existiert eine Folge $(u_n) \subset C^1_c(\mathbb{R})$ mit $u_n \to u$ in $W^{1,p}(\mathbb{R})$. Wegen der gerade gezeigten Ungleichung ist dann, da $(u_n)$ insbesondere auch eine Cauchyfolge in $W^{1,p}$ ist, $(u_n)$ auch eine Cauchyfolge in $L^\infty$, und konvergiert also wegen Vollständigkeit gegen ein $\tilde{u} \in L^\infty$. Dieses $\tilde{u}$ ist aber fast überall gleich $u$, da aus $u_n \xrightarrow{L^\infty} \tilde{u}$ folgt, dass $u_n$ dem Maße nach gegen $\tilde{u}$ konvergiert. Ebenso folgt natürlich aus $u_n \xrightarrow{W^{1,p}} u$, dass $u_n \xrightarrow{L^p} u$, also konvergiert $u_n$ dem Maße nach gegen $u$, und somit folgt $u = \tilde{u}$ fast überall und insbesondere auch $\norm{u}_{L^\infty}=\norm{\tilde{u}}_{L^\infty}$. Bildet man nun den Grenzwert $n \to \infty$ in der Ungleichung $\norm{u_n}_{\infty} \leq C \norm{u_n}_{W^{1,p}}$, erhält man die gewünschte Ungleichung.\\
+
+Beweis von $(i)$: Dass überhaupt $W^{1,p}(I) \subset C(\bar{I})$ gilt, haben wir schon in Satz \ref{thm:stetig} gezeigt, und zwar für alle $p \in [1,\infty]$. Sei nun $p>1$. Ohne Beschränkung der Allgemeinheit zeigen wir nur, dass die Inklusion des Einheitsballs $B_1(0) \subset W^{1,p}(I)$ in $C(\bar{I})$ kompakten Abschluss hat. Dafür bietet sich der Satz von Arzel{\`a}-Ascoli an, den wir hier in einer etwas anderen Version, als wir ihn in der Vorlesung zur Funktionalanalysis hatten, benötigen [1, Satz 4.25]: Sei $(K,d)$ ein kompakter metrischer Raum und $A\subset C(K)$ beschränkt sowie gleichgradig stetig, d.h. für alle $\varepsilon > 0$ existiere $\delta > 0$ sodass $d(x,y)< \delta \Rightarrow \abs{f(x)-f(y) < \varepsilon}$ für alle $x,y \in K$ und für alle $f \in A$. Dann ist $A$ relativ kompakt. Wir müssen also gleichgradige Stetigkeit von $B_1(0) \subset W^{1,p}(I)$ zeigen, dann sind wir fertig. Betrachte dazu für $u \in B_1(0)$
+\begin{align*}
+\abs{u(x)-u(y)} \overset{\text{Satz \ref{thm:stetig}}}{=} \abs{\int_{y}^x u'(t) \mathrm{d}t} \overset{\text{Hölder}}{\leq} \abs{\int_y^x \abs{u'(t)} \mathrm{d}t}^{1/p}\abs{\int_y^x 1 \mathrm{d}t}^{1/q} \\
+\leq \norm{u'}_{L^p} \abs{x-y}^{1/q} \leq \norm{u'}_{W^{1,p}} \abs{x-y}^{1/q} <  \abs{x-y}^{1/q}.
+\end{align*}
+Für gegebenes $\varepsilon$ ist also beispielsweise $\delta = (\varepsilon/2)^q$ eine mögliche Wahl, die gleichgradige Stetigkeit zeigt. Somit ist $B_1(0)$ in $C(\bar{I})$ (da $\bar{I}$ abgeschlossen und \textit{beschränkt} per Voraussetzung) nach Arzel{\`a}-Ascoli relativ kompakt und damit die Inklusionsabbildung $W^{1,p}(I) \subset C(\bar{I})$ kompakt. Beachte auch, dass die Abschätzung mit der Hölderungleichung uns für $p = 1$, $q = \infty$ nicht weiterbringen würde.\\
+
+Beweis von $(ii)$: Dass $W^{1,1}(I) \subset L^{p'}(I)$ für alle $p' \in [1,\infty]$ gilt, folgt für beliebige $I$ aus Gleichung \ref{eq:einbett} (und ist für $p'=1$ und $p' = \infty$ natürlich klar): Sei $u \in W^{1,1(I)}$, dann ist also insbesondere $\norm{u}_{L^{1}}< \infty$, und außerdem mit dem gerade bewiesenen Satz $\norm{u}_{L^\infty} < \infty$. Damit folgt aber mit Hölder für $p' < \infty$
+\begin{align*}
+\norm{u}_{L^{p'}}^{p'} \leq \norm{u}_{L^1} \norm{\abs{u}^{p'-1}}_{L^\infty} < \infty.
+\end{align*}
+Sei wieder $B_1(0)\subset W^{1,1}(I)$ der Einheitsball. Wir zeigen die relative Kompaktheit der Inklusion des Einheitsballs in $L^{p'}(I)$ für $p' \in [1,\infty)$ mithilfe des Satzes von Kolmogorov-Riesz, der eine Art $L^p$-Version des Satzes von Arzel{\`a}-Ascoli darstellt und den wir in der Funktionalanalysis-Vorlesung leider nicht behandelt haben, s.\ also bspw.\ [1, Satz 4.26]: Sei $p \in [1,\infty)$, $n \in \mathbb{N}$, $A \subset L^p(\mathbb{R}^n)$ beschränkt und für alle $\varepsilon > 0$ existiere ein $\delta > 0$, sodass für alle $h \in \mathbb{R}^n$ mit $\abs{h}< \delta:$ $\norm{\tau_h f - f}_{L^p}< \epsilon$ für alle $f \in A$. Dann ist $A|_\Omega$ relativ kompakt in $L^p(\Omega)$ für alle messbaren Mengen $\Omega \subset \mathbb{R}^n$ mit endlichem Maß.\\
+Wir müssen also zunächst $B_1(0)\subset W^{1,1}(I)$ mithilfe des Fortsetzungsoperators $P$ auf  $W^{1,1}(\mathbb{R})$ fortsetzen. Bezeichne diese Fortsetzung mit $\tilde{B} = P(B_1(0))$, sodass $B_1(0) = \tilde{B}|_I$. Nach Satz \ref{thm:fort}, $(iii)$, ist $\tilde{B} \subset W^{1,1}(\mathbb{R})$ weiterhin beschränkt. Durch die oben angedeutete Rechnung mit der Hölderungleichung erhalten wir, dass $\tilde{B} \subset L^{p'}(\mathbb{R})$ ebenfalls beschränkt ist, da $\tilde{B}$ in $L^1(\mathbb{R})$ und $L^\infty(\mathbb{R})$ beschränkt ist. Es bleibt also wieder die $L^p$-Version der gleichgradigen Stetigkeit zu zeigen. Nutze dafür Proposition  \ref{prop:lpprop}, wobei, wie im Beweis dort bemerkt, $(i) \Rightarrow (ii)$ auch für $p=1$ wahr ist, also haben wir für $u \in \tilde{B}$
+\begin{align*}
+\norm{\tau_h u - u}_{L^1(\mathbb{R})} \leq \norm{u'}_{L^1(\mathbb{R})} \abs{h} \leq C \abs{h}. 
+\end{align*}
+Damit bekommen wir durch analoger Rechnung wie oben
+\begin{align*}
+\norm{\tau_h u - u}_{L^{p'}(\mathbb{R})}^{p'} \leq \underbrace{\norm{\tau_h u - u}_{L^1(\mathbb{R})}}_{\leq C \abs{h}} \underbrace{\norm{\abs{\tau_h u - u}^{p' - 1}}_{L^\infty(\mathbb{R})}}_{= \norm{\tau_h u - u}_{L^\infty(\mathbb{R})}^{p' - 1} \leq (2 \norm{u}_{L^\infty(\mathbb{R})})^{p'-1}} \leq \tilde{C} \abs{h}
+\end{align*}
+und erhalten somit gleichgradige $L^{p'}$-Stetigkeit, also ist $\tilde{B}$ relativ kompakt in $L^{p'}(I)$ (da $I$ beschränkt!).
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Mit dem Satz \ref{thm:einbett} erhalten wir für $I$ beschränkt eine dritte, äquivalente Norm auf $W^{1,p}(I)$ für $p \in [1,\infty]$: Für $u \in W^{1,p}(I)$ definiere $\norm{u}_{W^{1,p}(I),(3)} = \norm{u'}_{L^p(I)} + \norm{u}_{L^{p'}(I)}$, wobei $p' \in [1,\infty]$ beliebig ist. Die eine Richtung der Äquivalenz folgt dabei aus $\norm{u}_{L^{p'}(I)} \leq C \norm{u}_{W^{1,p}(I)}$; für $p' = \infty$ war das gerade der Inhalt von Glg.\ \ref{eq:einbett}, und für $p' < \infty$ gilt, da $I$ beschränkt, $\norm{u}_{L^{p'}(I)}^{p'} = \int_I \abs{u}^{p'} \leq C \norm{u}_{L^\infty(I)}^{p'} \leq C \norm{u}_{W^{1,p}(I)}^{p'}$. \textcolor{red}{Wie geht die andere Richtung? TODO!} Das zeigt jedenfalls für $I$ beschränkt, dass $u \in W^{1,p}(I) \Rightarrow u \in L^{p'}(I)$ für alle $p' \in [1,\infty]$. Ist $I$  nicht beschränkt, so gilt immerhin noch $u \in W^{1,p}(I) \Rightarrow u \in L^{p'}(I)$ für $p' \in [p,\infty]$, denn $\norm{u}_{L^{p'}(I)}^{p'} = \int_I \abs{u}^{p'} \leq \norm{u}^{p'-p} \int_I \abs{u}^p < \infty$. Im Allgemeinen gilt aber $u \not \in L^{p'}(I)$ für $p' \in [1,p)$; ein etwas längliches Beispiel ist in [1, Aufgabe 8.1] angegeben für $I = \mathbb{R}$.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{corollary} \label{kor:gw}
+Sei $I$ ein unbeschränktes Intervall und $u \in W^{1,p}(I)$ mit $p \in [1,\infty)$. Dann gilt $\lim_{\abs{x} \to \infty, x \in I} u(x) = 0$.
+\end{corollary}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Nach Dichtheitssatz existiert  eine Folge $(u_n) \subset C_c^1(\mathbb{R})$ mit $u_n|_I \to u$ in $W^{1,p}(I)$, also mit Satz \ref{thm:einbett} auch $u_n|_I \to u$ in $L^{\infty}(I)$. Für beliebiges $\varepsilon > 0$ gibt es also ein $n_0 \in \mathbb{N}$, sodass $\norm{u_{n_0}|_I - u}_{L^{\infty}(I)} < \varepsilon$. Da aber $u_{n_0}$ kompakten Träger hat, folgt $\abs{u(x)} < \varepsilon$ für $x$ groß genug, also, da $\varepsilon$ beliebig war,  $\lim_{\abs{x} \to \infty, x \in I} u(x) = 0$.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{corollary}(Produktregel, partielle Integration, $W^{1,p}(I)$ als Banach-Algebra) \label{kor:partint}\\
+Seien $u,v \in W^{1,p}(I)$ mit $p \in [1,\infty]$. Dann gilt $uv \in W^{1,p}(I)$ mit $(uv)'=u'v+uv'$, und es gilt für alle $x,y \in \bar{I}$:
+\begin{align}
+\int_y^x u'v = u(x)v(x)-u(y)v(y)-\int_y^xuv'
+\end{align}
+\end{corollary}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Nach Satz \ref{thm:einbett} gilt $u \in L^\infty(I)$, also $\norm{uv}_{L^p(I)} \leq \norm{u}_{L^\infty(I)} \norm{v}_{L^p(I)} < \infty$ und $uv \in L^p(I)$ (Bemerkung: Dies ist i.A.\ falsch für Produkte von Funktionen, die nur in $L^p$ liegen, also $u,v \in L^p \not \Rightarrow uv \in L^p$). Als nächstes wollen wir schwache Differenzierbarkeit zeigen, betrachte dazu zuerst $p \in [1,\infty)$ und nutze für diesen Fall ein Dichtheitsargument: Seien $(u_n),(v_n) \subset C_c^1(\mathbb{R})$ mit $u_n|_I \to u$ und $v_n|_I \to v$ in $W^{1,p}(I)$ (also auch $u_n|_I \to u$ und $v_n|_I \to v$ in $L^\infty(I)$, wieder nach Satz \ref{thm:einbett}). Damit folgt $u_n|_I  v_n|_I \to uv$ in $L^\infty(I)$, denn 
+\begin{align*}
+\norm{u_n|_I  v_n|_I - uv}_{L^\infty(I)} \leq \norm{u_n|_I}_{L^\infty(I)} \;  \norm{v_n|_I - v}_{L^\infty(I)} + \norm{v}_{L^\infty(I)} \; \norm{u_n|_I - u}_{L^\infty(I)} \to 0,
+\end{align*}
+und analog $u_n|_I  v_n|_I \to uv$ in $L^p(I)$, denn
+\begin{align*}
+\norm{u_n|_I  v_n|_I - uv}_{L^p(I)} \leq \norm{u_n|_I}_{L^\infty(I)}  \; \norm{v_n|_I - v}_{L^p(I)} + \norm{v}_{L^\infty(I)} \; \norm{u_n|_I - u}_{L^p(I)} \to 0.
+\end{align*}
+Für $u_n$ und $v_n$ gilt die klassische Produktregel, also $(u_n v_n)' = u_n' v_n + u_n v_n'$. Da $u_n'|_I \to u$ und $v_n'|_I$ in $L^p(I)$, folgt somit analog zu den Rechnungen oben $(u_n v_n)' \to u' v + u v'$ in $L^p(I)$. Nach Bemerkung \ref{bem:konv} folgt dann aber sofort $uv \in W^{1,p}(I)$ und $(uv)' = u' v + u v'$. Integriert man diese Produktregel auf, liefert Satz \ref{thm:stetig} die partielle Integrationsformel.\\
+
+Es bleibt der Fall $p = \infty$. Seien $u,v \in W^{1,\infty}(I)$, d.h.\ insb.\ $u,v,u',v' \in L^\infty(I)$ und damit auch $uv \in L^\infty(I)$ und $u'v+uv' \in L^\infty(I)$. Wir müssen also nur nachrechnen, dass $\int_I u v \varphi' = - \int_I (u'v+uv')\varphi$ für alle $\varphi \in C_c^1(I)$: Betrachte dazu für beliebiges $\varphi \in C_c^1(I$ ein beschränktes Intervall $J$ mit $\text{supp}\, \varphi \subset J \subset I$. Dann ist, da $J$ beschränkt, $u,v \in W^{1,p}(I)$ für alle $p < \infty$. Also folgt mit dem obigen Beweis
+\begin{align*}
+\int_I u v \varphi' = \int_J u v \varphi' = -\int_J (u'v+uv') \varphi = -\int_I (u'v+uv') \varphi.
+\end{align*}
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{corollary}(Kettenregel)\\
+Sei $G \in C^1(\mathbb{R})$ mit $G(0)=0$, und $u \in W^{1,p}(I)$ mit $p \in [1,\infty]$. Dann gilt $G \circ u \in W^{1,p}(I)$, und $(G \circ u)'=(G' \circ u)u'$.
+\end{corollary}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Setze $M = \norm{u}_{L^\infty(I)} < \infty$ (nach Satz \ref{thm:einbett}). Da $G$ stetig differenzierbar ist, ist $G$ auf $[-M,M]$ lipschitzstetig, also gibt es $C > 0$ mit $\abs{G(s)} \leq C \abs{s}$ für alle $s \in [-M,M]$. Somit gilt $\abs{G \circ u} \leq C \abs{u}$ und wir erhalten $G \circ u \in L^p(I)$. Außerdem gilt $(G' \circ u) u' \in L^p(I)$, weil die Ableitung von $G$ in $[-M,M]$ beschränkt ist. Wir müssen also wieder nachrechnen, dass $\int_I (G \circ u) \varphi' = - \int_I (G' \circ u) u' \varphi$ für alle $\varphi \in C_c^1(I)$. Nehme wieder zuerst $p \in [1,\infty)$ für Dichtheit an. Dann existiert also $(u_n) \subset C_c^1(\mathbb{R})$ mit $u_n|_I \to u$ in $W^{1,p}(I)$ und wegen Satz \ref{thm:einbett} auch in $L^\infty(I)$. Wegen $\abs{G \circ u} \leq C \abs{u}$ (eventuell $C$ größer machen, damit das auch für alle $u_n$ gilt, aber da $(\norm{u_n}_{L^\infty})$ beschränkt, ist das kein Problem) folgt dann auch $(G \circ u_n)|_I \to G \circ u$ in $L^\infty(I)$ und genauso $(G' \circ u_n)u_n' |_I \to(G' \circ u)u'$ in $L^p(I)$. Da, aber für alle $n \in \mathbb{N}$ mit gewöhnlicher partieller Integration gilt, dass $\int_I (G \circ u_n) \varphi' = - \int_I (G' \circ u_n) u_n' \varphi$ für alle $\varphi \in C_c^1(I)$, folgt mit $\int_I (G \circ u) \varphi' = - \int_I (G' \circ u) u' \varphi$ per Grenzwertbildung. Dabei ist es entscheidend, dass, obwohl $I$ unbeschränkt ist, die Integrale für jedes feste $\varphi$ nur über ein beschränkte Intervall $J$, das den Träger von $\varphi$ enthält, gehen, um nutzen zu können, dass allgemein für $f_n,f \in L^p(J)$, $J$ beschränkt, $f_n \to f$ in $L^p(J)$, gilt, dass $\int_J f_n \to \int_J f$, denn $\abs{\int_J f_n - \int_J f}\leq \int_J \abs{f_n-f} \leq c(J) \norm{f_n-f}_{L^p(J)} \to 0$. Für $p = \infty$ gehen wir wie im vorigen Korollar vor.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}
+Für $m \in \mathbb{N}$, $m \geq 2$ und $p \in [1,\infty]$ definieren wir induktiv
+\begin{align*}
+W^{m,p}(I) = \{u \in W^{m-1,p}(I)\; | \; u' \in W^{m-1,p}(I)\}.
+\end{align*}
+und schreiben wieder $H^m(I) = W^{m,2}(I)$.
+\end{definition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Man kann zeigen, dass $u \in W^{m,p}(I)$ genau dann wenn es $g_1, \dots , g_m \in L^p(I)$ gibt mit
+\begin{align*}
+\int_I u \varphi^{(j)} = (-1)^j \int_I g_j \varphi \quad \forall \varphi \in C_c^\infty(I) \; , j = 1 , \dots , m .
+\end{align*}
+Wir bezeichnen diese $g_j$ mit $u^{(j)}$ oder $D^j u$, mit $D^0 u := u$, und definieren auf $W^{m,p}(I)$ die Norm $\norm{u}_{W^{m,p}(I)}=\sum_{j=0}^m \norm{D^j u}_{L^p(I)}$ sowie auf $H^m(I)$ das Skalarprodukt $(u,v)_{H^m(I)} = \sum_{j=0}^m \int_I D^j u D^j v$. Eine äquivalente Norm auf $W^{m,p}(I)$ ist $\norm{u}_{W^{m,p}(I),(2)}=\norm{u}_{L^p(I)} + \norm{D^m u}_{L^p(I)}$. Für $W^{m,p}(I)$ gelten analoge Aussagen wie die bisher bewiesenen, zum Beispiel gilt für $I$ beschränkt, dass $W^{m,p}(I) \subset C^{m-1}(\bar{I})$ mit stetiger Inklusion, die für $p \in (1,\infty]$ kompakt ist.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}
+Sei $p \in [1,\infty)$. Wir bezeichnen mit $W^{1,p}_0(I)$ den Abschluss von $C_c^1(I)$ in $W^{1,p}(I)$, setzen $H_0^1(I) = W^{1,2}_0(I)$ und statten diese Räume mit der Norm bzw.\ dem Skalarprodukt des jeweiligen $W^{1,p}(I)$ aus.
+\end{definition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+$W^{1,p}_0(I)$ ist für alle $p \in [1,\infty]$ ein separabler Banachraum, und für $p>1$ reflexiv (da $W^{1,p}_0(I)$ abgeschlossener Teilraum von einem separablen, reflexiven Banachraum). $H_0^1(I)$ ist also insbesondere ein separabler Hilbertraum. Ist $I = \mathbb{R}$, so sagt Satz \ref{thm:dicht}, dass $C_c^\infty(\mathbb{R})$ dicht liegt in $W^{1,p}(\mathbb{R})$, also, da $C_c^\infty$ dicht in $C_c^1$ liegt, $W_0^{1,p}(\mathbb{R}) = W^{1,p}(\mathbb{R})$ und die Definition liefert nichts Neues. Allgemein gilt wegen der Dichtheit von $C_c^\infty(I)$ in $C_c^1(I)$ natürlich, dass $C_c^\infty(I)$ auch dicht in $W_0^{1,p}(I)$ liegt. Gilt $u \in W^{1,p}(I) \cap C_c(I)$, hat also $u$ kompakten Träger, so folgt $u \in W^{1,p}_0(I)$ (Falten mit Dirac-Folge gibt Folge in $C_c^1(I)$, die in $W^{1,p}(I)$ gegen $u$ geht).
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} (Charakterisierung von $W^{1,p}_0(I)$ durch das Verhalten am Rand des Intervalls) \label{thm:w1p0}\\
+Sei $u \in W^{1,p}(I)$, $p \in [1,\infty)$. Dann gilt $u \in W^{1,p}_0(I)$ genau dann, wenn $u|_{\partial I} = 0$.
+\end{theorem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Sei $u \in W^{1,p}_0(I)$. Dann existiert also eine Folge $(u_n) \subset C_c^1(I)$ mit $u_n \to u$ in $W^{1,p}(I)$, also nach Satz \ref{thm:einbett} auch $u_n \to u$ in $L^\infty(\bar{I})$. Dann folgt, weil $u_n|_{\partial I} = 0$, dass $u|_{\partial I} = 0$.\\
+
+Andersherum sei $u \in W^{1,p}(I)$ mit $u|_{\partial I} = 0$. Wähle eine Funktion $G \in C^1(\mathbb{R})$ mit $G(t) = 0$ für $\abs{t} \leq 1$ und $G(t) = t$ für $\abs{t} \geq 2$ sowie $\abs{G(t)} \leq \abs{t}$ für alle $t \in \mathbb{R}$. Definiere $u_n = (1/n)G(nu)$, dann ist nach dem Satz über die Kettenregel $u_n \in W^{1,p}(I)$. Per Konstruktion gilt $\text{supp} \, u_n \subset \{x \in I \; | \; \abs{u(x)} \geq 1/n\}$. Da $u|_{\partial I} = 0$ und $\lim_{\abs{x} \to \infty, x \in I}u(x)=0$ nach Korollar \ref{kor:gw}, ist somit $\text{supp} \, u_n$ kompakt in $I$, also nach der vorherigen Bemerkung $u_n \in W^{1,p}_0(I)$. Da $u_n \to u$ in $W^{1,p}(I)$ (dominierte Konvergenz, $u_n \to u$ punktweise, Majorante $\abs{u}$, analog für $u'$), folgt, da $W^{1,p}_0(I)$ abgeschlossen ist, $u \in W^{1,p}_0(I)$.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Wir geben \textcolor{red}{vorerst (?)} ohne Beweis zwei weitere Charakterisierungen von $W^{1,p}_0(I)$ an:
+\begin{enumerate}[(i)]
+\item Sei $p \in [1,\infty)$ und $u \in L^p(I)$, und definiere $\tilde{u}:\mathbb{R}  \to \mathbb{R}$ durch $\tilde{u}(x) = u(x)$ für $x \in I$ und $\tilde{u}(x) = 0$ für $x \in \mathbb{R} \setminus I$. Dann gilt $u \in W^{1,p}_0(I)$ genau dann wenn $\tilde{u} \in W^{1,p}(\mathbb{R})$.
+\item Sei $p \in (1,\infty)$ und $u \in L^p(I)$. Dann gilt $u \in W^{1,p}_0(I)$ genau dann wenn es ein $C \in \mathbb{R}$ gibt mit $\abs{\int_I u \varphi'} \leq C \norm{\varphi}_{L^q(I)}$ für alle $\varphi \in C_c^1(\mathbb{R})$ (!).
+\end{enumerate}
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition}(Poincar{\'e}-Ungleichung)\\
+Sei $I$ beschränktes Intervall und $p \in [1,\infty)$. Dann existiert eine nur von $\abs{I}< \infty$ abhängige Konstante $C\in \mathbb{R}$, sodass
+\begin{align}
+\norm{u}_{W^{1,p}(I)} \leq C \norm{u'}_{L^p(I)} \quad \forall u \in W^{1,p}_0(I).
+\end{align}
+Damit ist also auf $W^{1,p}_0(I)$ die Norm $\norm{\cdot'}_{L^{p}(I)}$ äquivalent zu $\norm{\cdot}_{W^{1,p}(I)}$.
+\end{proposition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Setze $I = (a,b)$ mit $-\infty < a < b < \infty$. Sei $u \in W^{1,p}_0(I)$. Da $u(a) = 0$, gilt nach Satz \ref{thm:stetig} $\abs{u(x)} = \abs{\int_a^x u'(t) \mathrm{d}t}\leq \norm{u'}_{L^1(I)}$, also $\norm{u}_{L^\infty(I)} \leq \norm{u'}_{L^1(I)}$. Dann folgt die Aussage aus $\norm{u}_{L^p(I)} = \left(\int_I \abs{u}^p \right)^{1/p} \leq \lambda(I)^{1/p} \norm{u}_{L^\infty(I)}$.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Die Ungleichung zeigt uns insbesondere, dass für beschränktes $I$ durch $(u,v)= \int_I u'v'$ ein Skalarprodukt auf $H^1_0(I)$ definiert wird (alle Eigenschaften bis auf positive Definitheit sind klar, und die Poincar{\'e}-Ungleichung liefert, dass $(u,u)=0 \Rightarrow u = 0$ für $u \in H^1_0(I)$). Die zugehörige Norm $\norm{\cdot'}_{L^2(I)}$ ist dann natürlich äquivalent zur $H^1$-Norm.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Für $m \in \mathbb{N}$, $n \geq 2$ und $p \in [1,\infty)$ definieren wir $W^{m,p}_0(I)$ als Abschluss von $C_c^m(I)$ in $W^{m,p}(I)$. Man kann dann zeigen, dass analog zum bisher behandelten Fall $m=1$ gilt, dass $W_0^{m,p}= \{u \in W^{m,p}(I)  \; | \; u|_{\partial I} = D u|_{\partial I} = \dots = D^{m-1}u|_{\partial I} = 0\}$. Damit gibt es also einen wichtigen Unterschied zwischen $W^{2,p}_0(I)=\{u \in W^{2,p}_0(I) \; | \;   u|_{\partial I} = D u|_{\partial I} =0 \}$ und $W^{2,p}(I) \cap W^{1,p}_0(I) = \{u \in W^{2,p}_0(I) \; | \;   u|_{\partial I} = 0 \}$.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition} 
+(bzw. Notation) Den Dualraum von $W^{1,p}_0(I)$, $p \in [1,\infty)$, bezeichnen wir mit $W^{-1,q}(I)$ mit $q \in (1,\infty]$ konjugiert zu $p$. Den Dualraum von $H^1_0(I)$ bezeichnen wir mit $H^{-1(I)}$.
+\end{definition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition}
+Sei $l \in W^{-1,q}(I), q \in (1,\infty]$. Dann existieren $f_0,f_1 \in L^{q}(I)$, sodass
+\begin{align*}
+l(u) = \int_I f_0 u  + \int_I f_1 u' \quad \forall u \in W^{1,p}_0(I), p \in [1,\infty)
+\end{align*}
+und $\norm{l}_{ W^{-1,q}(I)}=\max(\norm{f_0}_{L^q(I)},\norm{f_1}_{L^q(I)})$. Ist $I$ beschränkt, so kann $f_0=0$ gewählt werden.
+\end{proposition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+$f_0$ und $f_1$ sind nicht eindeutig bestimmt. Für stetige lineare Abbildungen $\tilde{l}: W^{1,p}(I) \to \mathbb{R}$, $p \in [1,\infty)$, gilt nur der erste Teil der Proposition, d.h. es existieren $f_0,f_1 \in L^{q}(I)$ mit $\tilde{l}(u)=\int_I f_0 u  + \int_I f_1 u'$ für alle $ u \in W^{1,p}(I)$.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Sei $l \in W^{-1,q}(I), q \in (1,\infty]$. Betrachte den Produktraum $E = L^p(I) \times L^p(I), p \in [1,\infty)$ mit Norm $\norm{h}=\norm{(h_0,h_1)}= \norm{h_0}_{L^p(I)} +\norm{h_1}_{L^p(I)}$. Die Abbildung $T: W_0^{1,p}(I) \to E, u \mapsto (u,u')$ ist offenbar eine lineare Isometrie. Wir bezeichnen mit $G = T(W_0^{1,p}(I)) \subset E$ das Bild von $W_0^{1,p}(I)$ unter $T$ und mit $S:G \to W_0^{1,p}(I)$ die Umkehrabbildung von $T$ auf $G$. Die Abbildung $\phi:G \to \mathbb{R}, h \mapsto l(Sh)$ ist ein stetiges lineares Funktional auf $G$ ($\norm{\phi}_{G^*}=\norm{l}_{W^{-1,q}(I)}$) und kann folglich nach Hahn-Banach zu einem stetigen linearen Funktional $\Phi:E \to \mathbb{R}$ fortgesetzt werden mit $\norm{\Phi}_{E^*}=\norm{l}_{W^{-1,q}(I)}$. Auf $E$ können wir aber den Darstellungssatz von Riesz anwenden, es gibt also $f_0, f_1 \in L^q(I)$ mit $\Phi(h)=\int_If_0h_0 + \int_If_1h_1$ für alle $h \in E$. Eingeschränkt auf $G$ zeigt das, dass $l(u) = \int_I f_0 u  + \int_I f_1 u'$ für alle $u \in W^{1,p}_0(I)$. Ebenso zeigt das $\norm{l}_{ W^{-1,q}(I)}=\max(\norm{f_0}_{L^q(I)},\norm{f_1}_{L^q(I)})$, denn es gilt mit Hölder
+\begin{align*}
+\norm{\Phi}_{E^*}= \sup_{\norm{h_0}_p + \norm{h_1}_p = 1} \abs{\int_If_0h_0 + \int_If_1h_1} \leq \sup_{\norm{h_0}_p + \norm{h_1}_p = 1} \norm{f_0}_q \norm{h_0}_p + \norm{f_1}_q \norm{h_1}_p = \max(\norm{f_0}_{L^q(I)},\norm{f_1}_{L^q(I)}),
+\end{align*}
+und dieses Maximum wird, falls o.B.d.A.\ $\norm{f_0}_q \geq \norm{f_1}_q$ mit der Wahl $h = (\text{sgn}(f_0) \abs{f_0}^{q-1}/\norm{f_0}_q^{q/p},0)$ für $q < \infty$ und \textcolor{red}{$h = ?$ für $q = \infty$}. Ist $I$ beschränkt, so wissen wir nach der Poincar{\'e}-Ungleichung, dass wir $W^{1,p}_0(I)$ auch äquivalent mit der Norm $\norm{u'}_{L^p(I)}$ ausstatten können. Wir können also alles Argumente dieses Beweises für $E =  L^p(I)$ wiederholen und erhalten damit $f_0=0$.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Randwertprobleme}
+Mir dieser Vorarbeit können wir uns nun dem eigentlichen Thema des Vortrags widmen: Dem Nachweis der Existenz von Lösungen von Randwertproblemen mithilfe eine Formulierung als schwaches Variationsproblem. Dies werden wir beispielhaft anhand verschiedener konkreter Probleme nachvollziehen: 
+\subsection{Inhomogene DGL 2. Ordnung mit Dirichlet-Randbedingungen, Beispiel 1}
+Betrachte das Problem
+\begin{align}
+\begin{cases}
+-u'' + u = f \quad \text{ in } I = (0,1) \text{ mit } f \in C(\bar{I}) \text{ vorgegeben},\\ 
+u(0)=u(1)=0.
+\end{cases} \label{bsp:bsp1stark}
+\end{align}
+Die Frage, ob ein $u \in C^2(\bar{I})$, das dieses Problem löst, existiert und eindeutig ist, ließe sich hier auch durch direkte Rechnung mithilfe von Variation der Konstanten beantworten\footnote{Der Vollständigkeit halber: $u_1(x)= \sinh(x)$, $u_2(x) = \cosh(x)$ bilden ein Fundamentalsystem der homogenen Gleichung. Nutze dann für Variation der Konstanten den Ansatz $u(x) = c_1(x) u_1(x) + c_2(x) u_2(x)$. Wir fordern $c_1'u_1+c_2'u_2 = 0$. Dann liefert Einsetzen des Ansatzes in die DGL
+\begin{align*}
+\left(\begin{array}{cc}
+u_1 & u_2\\
+u_1' & u_2'
+\end{array} \right) \left(\begin{array}{c}
+c_1'\\
+c_2'
+\end{array} \right) =\left(\begin{array}{c}
+0\\
+-f
+\end{array} \right) 
+\end{align*}. Da $u_1$ und $u_2$ ein Fundamentalsystem bilden, lässt sich die Matrix invertieren, um $c_1'$ und $c_2'$ zu bestimmen:
+\begin{align*}
+ \left(\begin{array}{c}
+c_1'(x)\\
+c_2'(x)
+\end{array} \right) = \left(\begin{array}{cc}
+- \sinh(x) & \cosh(x)\\
+\cosh(x) & -\sinh(x)
+\end{array} \right)\left(\begin{array}{c}
+0\\
+-f(x)
+\end{array} \right)  = \left(\begin{array}{c}
+-f(x) \cosh(x)\\
+f(x) \sinh(x)
+\end{array} \right) 
+\end{align*} Die Integrationskonstanten bei der anschließenden Berechnung von $c_1, c_2$ lassen sich dann so wählen, dass $u(0)=u(1)=0$ gilt.} Wir werden hier aber stattdessen unser Wissen über Sobolev-Räume nutzen, um die Frage auf elegante Weise beantworten zu können.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition}
+Eine klassische oder starke Lösung von (\ref{bsp:bsp1stark}) ist ein $u \in C^2(\bar{I})$, das (\ref{bsp:bsp1stark}) erfüllt. Eine schwache Lösung von (\ref{bsp:bsp1stark}) ist ein $u \in H_0^1(I)$, das 
+\begin{align}
+\int_I u'v' + \int_I uv = \int_I fv \quad \forall v \in H_0^1(I)  \label{bsp:bsp1schwach}
+\end{align} 
+erfüllt.
+\end{definition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma}
+Jede klassische Lösung von (\ref{bsp:bsp1stark}) ist auch ein schwache Lösung.
+\end{lemma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Sei $u \in C^2(\bar{I})$ Lösung von (\ref{bsp:bsp1stark}), und sei $v \in H^1_0(I)$. Dann gilt $u \in H^1_0(I)$, da $u$ stetig differenzierbar ist, $I$ beschränkt ist (s.\ Bemerkung \ref{bem:klas}), und $u|_{\partial I}=0$ (s.\ Satz \ref{thm:w1p0}). Außerdem ist offenbar
+\begin{align*}
+-\int_I u'' v + \int_I uv = \int_I u' v' + \int_I uv = \int fv
+\end{align*}
+per partieller Integration (s.\ Korollar \ref{kor:partint}, die Randterme verschwinden).
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition} \label{prop:min}
+Für jedes $f \in L^2(I)$ existiert eine eindeutige Lösung $u \in H_0^1(I)$ des schwachen Problems (\ref{bsp:bsp1schwach}). Diese Lösung wird bestimmt durch
+\begin{align*}
+u = \argmin_{v \in H_0^1(I)} \left(\frac{1}{2} \int_I (v^2+v'^2)-\int_I fv \right).
+\end{align*}
+\end{proposition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Wir bemerken, dass $\int_I u'v' + \int_I uv$ in (\ref{bsp:bsp1schwach}) nichts anderes als das Skalarprodukt $(\cdot,\cdot)_{H^1(I)}$ auf $H^1_0(I)$ ist. Betrachte also das stetige lineare Funktional $l \in H^{-1}(I)$ mit $l:H^1_0(I) \to \mathbb{R}, v \mapsto \int_I fv$. Nach dem Darstellungssatz von Riesz für Hilberträume existiert dann ein eindeutiges $u \in H^1_0(I)$ mit $l(v) = (u,v)_{H^1(I)}$ für alle $v \in H^1_0(I)$, und wir haben den ersten Teil der Aussage bewiesen. Für die Darstellung von $u$ als das angegebene Minimum brauchen wir den Satz von Lax-Milgram, den wir in der Vorlesung zur Funktionalanalysis leider nicht besprochen haben, der aber zum Beweis nicht mehr als den Banachschen Fixpunktsatz und Projektionen auf konvexe Mengen braucht, und der die zu beweisende Aussage dann sofort liefert. Dieser Satz lautet [1, Korollar 5.8]: Sei $H$ ein $\mathbb{R}$-Hilbertraum und $a:H\times H \to \mathbb{R}$ eine bilineare, stetige (d.h.\ konkret: es existiert $C>0$ sodass $\abs{a(u,v)} \leq C \norm{u} \norm{v}$ für alle $u,v \in H$) und koerzive (d.h.\ es existiert $\alpha>0$ sodass $a(v,v)\geq \alpha \norm{v}^2$ für alle $v \in H$) Form. Dann existiert für jedes $l \in H^*$ ein eindeutiges $u \in H$, sodass $a(u,v)=l(v)$ für alle $v \in H$. Ist $a$ symmetrisch, so wird dieses $u$ eindeutig bestimmt durch $\frac{1}{2} a(u,u) - l(u) = \min_{v \in H}\left(\frac{1}{2} a(v,v) - l(v) \right)$
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma}
+Für $f \in C(\bar{I})$ gilt für die eindeutige schwache Lösung $u \in H_0^1(I)$ von (\ref{bsp:bsp1schwach}), dass $u \in C^2(\bar{I})$.
+\end{lemma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Ist $f \in L^2(I)$, so gilt $u \in H^2(I)$. Dafür ist $u' \in H^1(I)$ zu prüfen, dies folgt aber direkt aus (\ref{bsp:bsp1schwach}), da somit $\int_I u' v' = \int_I (f-u) v$ für alle $v \in C_c^1(I) \subset H_0^1(I)$, und $u'' = -(f-u) \in L^2(I)$ per Voraussetzung. Ist nun $f \in C(\bar{I})$, dann ist offensichtlich $u'' \in C(\bar{I})$, also folgt mit Satz \ref{thm:stetig}, dass $u' \in C^1(\bar{I})$, also noch einmal mit Satz \ref{thm:stetig}, dass $u \in C^2(\bar{I})$.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma} \label{lemma:schwachstark}
+Eine schwache Lösung $u \in H^1_0(I)$ von (\ref{bsp:bsp1schwach}), die $C^2(\bar{I})$ ist, ist eine starke Lösung von (\ref{bsp:bsp1stark}). Somit besitzt das klassische Problem für $f \in C(\bar{I})$ ein eindeutige klassische Lösung!
+\end{lemma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Wir bemerken zuerst, dass $u \in H^1_0(I)$ in der Tat die Randbedingungen $u(0)=u(1)=0$ erfüllt nach Satz \ref{thm:w1p0}. Weil $u$  (\ref{bsp:bsp1schwach}) löst, gilt insbesondere $\int_I u'\varphi' + \int_I u\varphi = \int_I f\varphi$ für alle $\varphi \in C_c^1(I) \subset H^1_0(I)$. Da $u \in C^2(\bar{I})$, liefert klassische partielle Integration $\int_I (-u'' + u - f) \varphi= 0$ für alle $\varphi \in C_c^1(I)$. Da $(-u'' + u - f)$ stetig ist, folgt sofort, dass $-u''(t) + u(t) - f(t)=0$ für alle $t \in I$.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{corollary} Das inhomogene Dirichlet-Problem
+\begin{align}
+\begin{cases}
+-u'' + u = f \quad \text{ in } I = (0,1)\\
+u(0)= \alpha, \;  u(1) = \beta
+\end{cases}
+\end{align}
+hat für beliebige $\alpha,\beta \in \mathbb{R}$ und $f \in L^2(I)$ eine eindeutige Lösung $u \in H^2(I)$. Ist $f \in C(\bar{I})$, so gilt für diese Lösung $u \in C^2(\bar{I})$. Die Lösung $u$ wird charakterisiert durch
+\begin{align*}
+u = \argmin_{\substack{v \in H^1(I)\\v(0)=\alpha,v(1)=\beta}} \left(\frac{1}{2} \int_I (v^2+v'^2)-\int_I fv \right).
+\end{align*}
+\end{corollary}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Wähle eine beliebige glatte Funktion $u_0$ mit $u_0(0) = \alpha$, $u_0(1)=\beta$ (zum Beispiel $u_0(t) = \alpha + (\beta - \alpha ) t$). Setzt man $u = u_0 + \tilde{u}$, dann erhalten wir ein homogenes Randwertproblem für $\tilde{u}$ mit rechter Seite $f + u_0'' - u$ statt $f$. Damit folgt die Aussage aus den vorherigen Lemmata und Propositionen. Für die Charakterisierung von $u$ durch das Minimum bemerken wir, dass nach Proposition \ref{prop:min} gilt: $u = u_0 + \argmin_{v \in H^1_0(I)}\left(\frac{1}{2} \int_I (v^2+v'^2)-\int_I (f+u_0''-u)v \right)$. Da wir ein beliebiges $v \in H^1(I)$ mit $v(0)=\alpha$ und $v(1)=\beta$ schreiben können als $v=u_0 + \tilde{v}$ mit beliebigem, festem $u_0 \in H^1(I)$ mit $u_0(0)=\alpha$ und $u_0(1)=\beta$ sowie $\tilde{v} \in H^1_0(I)$, erhalten wir dann 
+\begin{align*}
+\argmin_{\substack{v \in H^1(I)\\v(0)=\alpha,v(1)=\beta}} \left(\frac{1}{2} \int_I (v^2+v'^2)-\int_I fv \right) = u_0 + \argmin_{v \in H^1_0(I)} \left(\frac{1}{2} \int_I (u_0+v)^2+(u_0'+v')^2-\int_I f(u_0+v) \right)\\
+=  u_0 + \argmin_{v \in H^1_0(I)} \left(\frac{1}{2} \int_I v^2+v'^2-\int_I fv + \int_I u_0 v + u_0' v' + \int_I u_0^2+u_0'^2 - \int_I f u_0\right)\\
+= u_0 +  \argmin_{v \in H^1_0(I)} \left(\frac{1}{2} \int_I v^2+v'^2-\int_I fv + \int_I u_0 v + u_0' v'\right) = u_0 + \argmin_{v \in H^1_0(I)} \left(\frac{1}{2} \int_I v^2+v'^2-\int_I fv + \int_I u_0 v - u_0'' v\right) = u,
+\end{align*}
+wobei wir in der letzten Zeile zunächst alle Terme, die kein $v$ beinhalten und deshalb für das Minimum irrelevant sind, weggelassen haben und dann noch mit Korollar \ref{kor:partint} partiell integriert haben.
+\end{proof}
+\subsection{Inhomogene DGL 2. Ordnung mit Dirichlet-Randbedingungen, Beispiel 2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Betrachte das Sturm-Liouville-Problem
+\begin{align}
+\begin{cases}
+-(pu')' + qu = f \quad \text{ in } I=(0,1),\\
+u(0)=u(1)=0,
+\end{cases} \label{eq:sl}
+\end{align}
+wobei $p \in C^1(\bar{I})$, $q \in C(\bar{I})$ und $f \in L^2(I)$ mit $p(x) \geq \alpha > 0$ und $q(x) \geq 0 $ für alle $x \in I$. Wir gehen die Schritte aus dem ersten Beispiel hier etwas schneller durch: Klassische Lösungen von (\ref{eq:sl}) erfüllen
+\begin{align*}
+\int_I pu'v' +\int_I quv = \int_I fv \quad \forall v \in H_0^1(I).
+\end{align*}
+Wir wenden wieder Lax-Milgram an auf den Hilbertraum $H^1_0(I)$ mit bilinearer Form $a(u,v)=\int_I pu'v' +\int_I quv$ (\textcolor{red}{eventuell könnte man auch, um nicht Lax-Milgram verwenden zu müssen, alternativ $a$ als neues Skalarprodukt betrachten und wieder Riesz anwenden?}). Diese Form ist stetig, denn
+\begin{align*}
+\abs{\int_I pu'v' + \int_I quv} \leq \norm{p}_\infty \norm{u'}_2 \norm{v'}_2  + \norm{q}_\infty \norm{u}_2 + \norm{v}_2 \leq c \norm{u}_{H^1}
+\norm{v}_{H^1}
+\end{align*}
+und koerziv, denn mit der Poincar{\'e}-Ungleichung folgt
+\begin{align*}
+a(v,v) = \int_I p v'^2 + q v^2 \geq \alpha \int v'^2 \geq C \norm{v}_{H^1}^2.
+\end{align*}
+Also existiert für jedes $f \in L^2(I)$ ein eindeutiges $u \in H^1_0(I)$, sodass $a(u,v)= \int_I fv$ für alle $v \in H^1_0(I)$. Dieses $u$ wird wieder bestimmt durch $u= \argmin_{v \in H^1_0(I)}\left(\frac{1}{2}\int_I (qv^2+pv'^2)-\int_I fv \right)$. Um zu zeigen, dass dies für $f \in C(\bar{I})$ eine klassische Lösung liefert, bemerken wir, dass aus $\int_I pu'v' +\int_I quv = \int_I fv$ für alle $v \in C_c^1(I) \subset H_0^1(I)$ folgt, dass $pu' \in H^1(I)$. Da $p \geq \alpha > 0$, gilt $1/p \in C^1(\bar{I})$, also $1/p \in H^1(I)$ und nach Produktregel (Korollar \ref{kor:partint}) $u' = (pu') \cdot 1/p \in H^1(I)$. Ist $f \in C(\bar{I})$, so folgt wieder $pu' \in C(\bar{I})$, also $u' \in C^1(\bar{I})$ und $u \in C^2(\bar{I})$. Analog zu Lemma \ref{lemma:schwachstark} zeigt man dann, dass wir dadurch in der Tat eine klassische Lösung von (\ref{eq:sl}) gefunden haben.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Inhomogene DGL 2. Ordnung mit Neumann-Randbedingungen}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Betrachte das Problem
+\begin{align}
+\begin{cases}
+-u'' + u = f \quad \text{ in } I = (0,1),\\
+u'(0)=u'(1)=0.
+\end{cases} \label{eq:neum}
+\end{align}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition}
+Für jedes $f \in L^2(I)$ existiert eine Lösung $u \in H^2(I)$ von (\ref{eq:neum}). Ist $f \in C(\bar{I})$, so gilt $u \in C^2(\bar{I})$. $u$ wird bestimmt durch
+\begin{align*}
+u = \argmin_{v \in H^1(I)} \left(\frac{1}{2} \int_I v^2+v'^2 - \int_I f v \right)
+\end{align*}
+\end{proposition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Da $u'$ an den Rändern verschwindet, erfüllen klassische Lösungen von (\ref{eq:neum}) weiterhin $\int_I u'v' + \int_I uv = \int_I fv$ für alle $v \in H^1(I)$. Wegen der neuen Randbedingungen arbeiten wir hier mit $H^1(I)$ statt mit $H^1_0(I)$! Wir wenden wieder Riesz bzw.\ Lax-Milgram auf $a(u,v) = (u,v)_{H^1}$ an und erhalten Existenz und Eindeutigkeit. Zu zeigen bleibt dann wieder, dass $u' \in H^2(I)$ und $f \in C(\bar{I}) \Rightarrow u \in C^2(\bar{I})$ (siehe vorige Beispiele; damit ergibt, da dann immer $u \in C^1(\bar{I})$, auch die punktweise Bedingung $u'(0)=u'(1)=0$ einen Sinn). Es bleibt also nur zu überprüfen, ob tatsächlich $u'(0)=u'(1)=0$ für das gefundene $u$. Integriere dazu  $\int_I u'v' + \int_I uv = \int_I fv$ für alle $v \in H^1(I)$ partiell, um
+\begin{align*}
+\int_I (-u'' +u - f)v  + u'(1)v(1)-u'(0)v(0) = 0 \quad \forall v \in H^1(I)
+\end{align*}
+zu erhalten. Für $v \in H_0^1(I)$ verschwinden die Randterme und es folgt $-u'' +u = f$ fast überall. Damit bleibt dann also $u'(1)v(1)-u'(0)v(0) = 0$ für alle $v \in H^1(I)$, also $u'(0)=u'(1)=0$.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Für das inhomogene Problem mit RB $u'(0)=\alpha, u'(1)=\beta$ gehen wir wie oben für den Dirichlet-Fall vor. Wir erhalten in diesem Fall
+\begin{proposition}
+Das inhomogene Neumann-Problem
+\begin{align}
+\begin{cases}
+-u'' + u = f \quad \text{ in } I = (0,1),\\
+u'(0)=\alpha, u'(1)=\beta,
+\end{cases} \label{eq:neum2}
+\end{align}
+hat für jedes $f \in L^2(I)$ und alle $\alpha, \beta \in \mathbb{R}$ eine eindeutige Lösung $u \in H^2(I)$. Für $f \in C(\bar{I})$ gilt $u \in C^2(\bar{I})$. Die Lösung $u$ wird charakterisiert durch\begin{align*}
+u = \argmin_{v \in H^1(I)} \left(\frac{1}{2} \int_I v^2+v'^2 - \int_I f v + \alpha v(0) - \beta v(1) \right).
+\end{align*}
+\end{proposition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Homogenisiere das Problem wieder mit durch Wahl eines $u_0 \in C^\infty(\bar{I})$ mit $u_0'(0)=\alpha$ und $u_0'(1)=\beta$ und setze $u = u_0 + \tilde{u}$. Dann suchen wir $\tilde{u}$ als Lösung des homogenen Neumann-Problems mit RHS $f+u_0''-u_0$ und erhalten Existenz und Eindeutigkeit der Lösung mit der vorigen Proposition. Ferner gilt 
+\begin{align*}
+\tilde{u} = \argmin_{v \in H^1(I)} \left(\frac{1}{2} \int_I v^2 + v'^2 -\int_I (f+u_0''-u_0) \right),
+\end{align*} 
+also 
+\begin{align*}
+\argmin_{v \in H^1(I)} \left(\frac{1}{2} \int_I v^2+v'^2 - \int_I f v + \alpha v(0) - \beta v(1) \right)\\
+ = u_0 + \argmin_{v \in H^1(I)} \left(\frac{1}{2} \int_I (u_0+v)^2+(u_0'+v')^2 - \int_I f (u_0+v) + \alpha (u_0(0)+v(0)) - \beta (u_0(1) + v(1)) \right)\\
+ = u_0 +  \argmin_{v \in H^1(I)} \left(\frac{1}{2} \int_I v^2+v'^2 - \int_I f v + \alpha v(0) - \beta v(1) + \int_I u_0 v + u_0' v' \right)\\
+ = u_0 +  \argmin_{v \in H^1(I)} \left(\frac{1}{2} \int_I v^2+v'^2 - \int_I f v + \alpha v(0) - \beta v(1) + \int_I (u_0 v - u_0'' v) + \underbrace{u_0'(1)}_{=\beta}v(1) - \underbrace{u_0'(0)}_{= \alpha} v(0) \right) = u.
+\end{align*}
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Anstatt unser voriges Resultat im Beweis zu nutzen, hätten wir alternativ auch das Problem mit den inhomogenen Randbedingungen direkt behandeln können. Dann erhalten wir als schwache Formulierung
+\begin{align*}
+\int_I u' v' + \int_I uv = \int_I fv - \alpha v(0) + \beta v(1) \quad \forall v \in H^1(I)
+\end{align*}
+und können wieder auf $H^1(I)$ mit Riesz/Lax-Milgram arbeiten, diesmal mit der stetigen linearen Abbildung $v \mapsto  \int_I fv - \alpha v(0) + \beta v(1)$ als rechte Seite. Das eindeutige $u \in H^1(I)$, was wir dann erhalten, erfüllt $\int_I u' v' + \int_I uv = \int_I fv$ für alle $v \in C_c^1(I) \subset H^1(I)$, wobei die Randterme wegen des kompakten Trägers der Testfunktionen verschwinden. Somit erhalten wir wieder $u \in H^2$, und der Rest folgt analog zu den vorigen Beweisen.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Inhomogene DGL 2. Ordnung mit gemischten Dirichlet- und Neumann-Rand-bedingungen}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Für 
+\begin{align}
+\begin{cases}
+-u'' + u = f \quad \text{ in } I = (0,1),\\
+u(0)=0, u'(1)=0,
+\end{cases} \label{eq:gem}
+\end{align}
+ist ein geeigneter Hilbertraum (vollständig, da abgeschlossen) $H = \{v \in H^1 \; | \; v(0)=0 \}$, die schwache Formulierung ist dann einfach
+\begin{align*}
+\int_I u' v' + \int_I u v = \int f v \quad \forall v \in H,
+\end{align*}
+und alle nötigen Argumente wurden bereits genannt.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Inhomogene DGL 2. Ordnung mit Robin-Randbedingungen}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Für Robin-Randbedingungen
+\begin{align}
+\begin{cases}
+-u'' + u = f \quad \text{ in } I = (0,1),\\
+u'(0)=k u(0), u(1)=0,
+\end{cases} \label{eq:rob}
+\end{align}
+mit $k \in \mathbb{R}$ gegeben erhalten wir als geeignete schwache Formulierung
+\begin{align*}
+\int_I u'v' + \int_I uv + k u(0) v(0) = \int fv \quad \forall v \in \tilde{H} = \{ w \in H^1(I) \; | \; w(1)=0 \}.
+\end{align*}
+Wollen wir hier dann den Darstellungssatz von Riesz für Hilberträume anwenden, sehen wir sofort, dass dies überhaupt nur für $k \geq 0$ möglich sein kann, da sonst keine positive Definitheit vorliegt. Alternativ muss für Lax-Milgram $k \geq 0$ gelten, damit die Form koerziv ist. Ist $k \geq 0$, erhalten wir wieder ein eindeutiges $u \in \tilde{H}$, das das schwache Problem löst, und wegen 
+\begin{align*}
+\int_I u'v' + \int_I uv = \int fv \quad \forall v \in C_c^1(I) \subset \tilde{H}.
+\end{align*}
+ist $u \in H^2(I)$, sodass mit partieller Integration
+\begin{align*}
+\int_I (-u'' + u - f)v + (k u(0)-u'(0)) v(0) = 0 \quad \forall v \in \tilde{H} = \{ v \in H^1(I) \; | \; v(1)=0 \}
+\end{align*}
+und somit tatsächlich $u'(0)=k u(0)$ und $-u'' + u = f$. Es lässt sich zeigen, dass das Randwertproblem (\ref{eq:rob}) in der Tat nicht für alle $k < 0$ und $f \in L^2(I)$ lösbar ist, s.\ [1, Aufgabe 8.21].
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Inhomogene DGL 2. Ordnung mit periodischen Randbedingungen}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Für periodische Randbedingungen
+\begin{align}
+\begin{cases}
+-u'' + u = f \quad \text{ in } I = (0,1),\\
+u(0)=u(1),u'(0)=u'(1)
+\end{cases} \label{eq:per}
+\end{align}
+ist offenbar eine geeignete schwache Formulierung
+\begin{align*}
+\int_I u' v' + \int_I uv = \int fv \quad \forall v \in H' = \{w \in H^1(I) \; | \; w(0)=w(1)\}.
+\end{align*}
+Riesz/Lax-Milgram liefert die eindeutige schwache Lösung, die dann offensichtlich $H^2$ ist und dann erhalten wir
+\begin{align*}
+\int_I (-u''+u-f)v +(u'(1)-u'(0))v(0) = 0 \quad \forall v \in H',
+\end{align*}
+sodass die korrekten Randbedingungen für $u'$ folgen.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Inhomogene DGL 2. Ordnung auf ganz $\mathbb{R}$}
+Betrachtet man die DGL auf ganz $\mathbb{R}$, d.h.\
+\begin{align}
+\begin{cases}
+-u'' + u = f &\quad \text{ in } \mathbb{R},\\
+u(x) \to 0 &\quad \text{ für } \abs{x} \to \infty,
+\end{cases} \label{eq:r}
+\end{align}
+mit $f \in L^2(\mathbb{R})$ gegeben, so ist eine sich anbietende schwache Formulierung
+\begin{align*}
+\int_\mathbb{R} u' v'  + \int_\mathbb{R} uv = \int_\mathbb{R} fv \quad \forall v \in H^1(\mathbb{R}).
+\end{align*}
+Um am Ende Eindeutigkeit der klassischen Lösung folgern zu können, müssen wir zunächst beweisen, dass jede klassische Lösung $u \in C^2(\mathbb{R})$ auch das schwache Problem löst, und damit, dass insbesondere $u \in H^1(\mathbb{R})$ für klassische Lösungen gilt. Betrachte dazu wieder eine Folge von Cut-Off-Funktionen $(\zeta_n) \in C_c^\infty(\mathbb{R})$ mit $\zeta_n(x) = \zeta(x/n)$ und $\zeta \in C_c^\infty(\mathbb{R})$, $0 \leq \zeta \leq 1$, sodass $\zeta(x)=1$ für $\abs{x} < 1$ und $\zeta(x) = 0$ für $\abs{x} \geq 2$ (s.\ Beweis von Satz \ref{thm:dicht}). Multipliziert man die DGL (\ref{eq:r}) mit $\zeta_n u$ und integriert, erhält man mit klassischer partieller Integration für diese Funktionen mit kompakten Träger, dass
+\begin{align*}
+\int_\mathbb{R} u'(\zeta_n u' + \zeta_n' u) +  \zeta_n u^2 = \int_\mathbb{R} f\zeta_nu \Rightarrow \int_\mathbb{R} \zeta_n (u^2+u'^2) = \int_\mathbb{R} \zeta_n fu + \frac{1}{2}\zeta_n '' u^2.
+\end{align*}
+Da $\zeta_n''$ nur für $x \in [n,2n]$ von 0 verschieden ist und $\zeta_n''(x)=\zeta''(x/n)/n^2$, lässt sich abschätzen, dass 
+\begin{align*}
+\int_\mathbb{R} \zeta_n'' u^2 \leq \frac{\norm{\zeta''}_\infty}{n^2} \int_{[-2n,-n]\cup[n,2n]} u^2 \leq \frac{2 \norm{\zeta''}_\infty}{n} \max_{\abs{x} \geq n} u(x)^2,
+\end{align*}
+und damit geht dieser Term für $n \to \infty$ gegen $0$, da $u(x) \to 0$ für $\abs{x} \to \infty$. Ferner liefert die Young'sche Ungleichung
+\begin{align*}
+ \int_\mathbb{R} \zeta_n fu \leq \frac{1}{2} \int_\mathbb{R} \zeta_n (u^2+f^2)
+\end{align*}
+Damit erhalten wir
+\begin{align*}
+\int_\mathbb{R} \zeta_n u'^2 + \frac{1}{2}\int_\mathbb{R} \zeta_n u^2 \leq \frac{1}{2} \int_\mathbb{R} \zeta_n f^2 + \frac{2 \norm{\zeta''}_\infty}{n} \max_{\abs{x} \geq n} u(x)^2
+\end{align*}
+und damit, da $f \in L^2(\mathbb{R})$ und da per Konstruktion der Satz von der monotonen Konvergenz anwendbar ist, $u,u' \in L^2(\mathbb{R})$, also $u \in H^1(\mathbb{R})$. Offensichtlich gilt
+\begin{align*}
+\int_\mathbb{R} u' v'  + \int_\mathbb{R} uv = \int_\mathbb{R} fv \quad \forall v \in C^1_c(\mathbb{R}),
+\end{align*}
+also folgt das mit einem Dichtheitsargument nach Satz \ref{thm:dicht} auch für alle $v \in H^1(\mathbb{R})$, und $u$ ist tatsächlich eine schwache Lösung.\\
+
+Nach dem Darstellungssatz von Riesz für Hilberträume hat das schwache Problem eine eindeutige Lösung. Es folgt wieder direkt $u \in H^2$ für diese Lösung und $u \in C^2(\mathbb{R})$ für $f \in L^2(\mathbb{R}) \cap C(\mathbb{R})$. Dass $u$ die richtigen Randbedingungen erfüllt, folgt  aus Korollar \ref{kor:gw}, und wir erhalten somit die eindeutige Lösung des klassischen Problems.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Das Problem
+\begin{align}
+\begin{cases}
+-u'' = f &\quad \text{ in } \mathbb{R},\\
+u(x) \to 0 &\quad \text{ für } \abs{x} \to \infty,
+\end{cases} \label{eq:r2}
+\end{align}
+mit $f \in L^2(\mathbb{R})$ können wir so nicht behandeln, da die bilineare Form $a(u,v)=\int_\mathbb{R} u'v'$ wäre und die Poincar{\'e}-Ungleichung für $I$ unbeschränkt nicht gilt. Diese bräuchten wir aber für Koerzivität, um bspw.\ Lax-Milgram anwenden zu können. Andererseits erhielten wir, wenn wir versuchen würden, Riesz zu benutzen, keinen vollständigen Raum mit diesem Skalarprodukt. Tatsächlich kann dieses Problem auch für $f \in C_c^\infty(\mathbb{R})$ keine Lösung haben, wie direktes Aufintegrieren der DGL in diesem Fall zeigt.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Literatur}
+\beginrefs
+\bibentry{1}{\sc H.~Brezis}, 
+``Functional Analysis, Sobolev Spaces and Partial Differential Equations''
+{\it Springer Science \& Business Media},
+2010.
+\endrefs
+\end{document}

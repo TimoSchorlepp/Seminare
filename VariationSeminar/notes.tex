@@ -1,0 +1,692 @@
+\documentclass[twoside]{article}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.05 in}
+
+\usepackage{amsmath,amsfonts,graphicx,amsthm, mathtools}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{enumerate}
+\usepackage{xcolor}
+\usepackage{todonotes}
+\usepackage{csquotes}
+\usepackage{physics}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{setspace}
+\usepackage[left=3cm,right=2cm,top=3cm,bottom=2cm,]{geometry}
+\graphicspath{{figures/}}
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+
+\newcounter{lecnum}
+\renewcommand{\thepage}{\thelecnum-\arabic{page}}
+\renewcommand{\thesection}{\thelecnum.\arabic{section}}
+\renewcommand{\theequation}{\thelecnum.\arabic{equation}}
+\renewcommand{\thefigure}{\thelecnum.\arabic{figure}}
+\renewcommand{\thetable}{\thelecnum.\arabic{table}}
+
+\setcounter{lecnum}{10}
+
+\newcommand{\head}{
+   \pagestyle{myheadings}
+   \thispagestyle{plain}
+   \newpage
+   \setcounter{page}{1}
+   \noindent
+   \begin{center}
+   \framebox{
+      \vbox{\vspace{2mm}
+    \hbox to 6.28in { {\bf Seminar Variationsrechnung WiSe 20/21
+	\hfill Ruhr-Universität Bochum,  19.01.2021} }
+       \vspace{4mm}
+       \hbox to 6.28in { {\Large \hfill \thelecnum. Absolut stetige Funktionen, totale Variation und $H^{1,1}$\hfill} }
+       \vspace{2mm}
+       \hbox to 6.28in { {\it Vortragsnotizen \hfill von Timo Schorlepp} }
+      \vspace{2mm}}
+   }
+   \end{center}
+}
+
+\renewcommand{\cite}[1]{[#1]}
+\def\beginrefs{\begin{list}%
+        {[\arabic{equation}]}{\usecounter{equation}
+         \setlength{\leftmargin}{2.0truecm}\setlength{\labelsep}{0.4truecm}%
+         \setlength{\labelwidth}{1.6truecm}}}
+\def\endrefs{\end{list}}
+\def\bibentry#1{\item[\hbox{[#1]}]}
+
+\newtheorem{theorem}{Satz}[lecnum]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Behauptung}
+\newtheorem{corollary}[theorem]{Korollar}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Bemerkung}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Beispiel}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+%\newenvironment{proof}{{\bf Beweis:}}{\hfill\rule{2mm}{2mm}}
+
+\newcommand{\calA}{\mathcal{A}}
+\newcommand{\calB}{\mathcal{B}}
+\newcommand{\calC}{\mathcal{C}}
+\newcommand{\calD}{\mathcal{D}}
+\newcommand{\calE}{\mathcal{E}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\calG}{\mathcal{G}}
+\newcommand{\calH}{\mathcal{H}}
+\newcommand{\calI}{\mathcal{I}}
+\newcommand{\calJ}{\mathcal{J}}
+\newcommand{\calK}{\mathcal{K}}
+\newcommand{\calL}{\mathcal{L}}
+\newcommand{\calM}{\mathcal{M}}
+\newcommand{\calN}{\mathcal{N}}
+\newcommand{\calO}{\mathcal{O}}
+\newcommand{\calP}{\mathcal{P}}
+\newcommand{\calR}{\mathcal{R}}
+\newcommand{\calS}{\mathcal{S}}
+\newcommand{\calT}{\mathcal{T}}
+\newcommand{\calU}{\mathcal{U}}
+\newcommand{\calV}{\mathcal{V}}
+\newcommand{\calW}{\mathcal{W}}
+\newcommand{\calX}{\mathcal{X}}
+\newcommand{\calY}{\mathcal{Y}}
+\newcommand{\calZ}{\mathcal{Z}}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\newcommand{\lk}{\left(}
+\newcommand{\rk}{\right)}
+\newcommand{\lgk}{\left\{}
+\newcommand{\rgk}{\right\}}
+\newcommand{\lek}{\left[}
+\newcommand{\rek}{\right]}
+\newcommand{\lkr}{\left<}
+\newcommand{\rkr}{\right>}
+
+\usepackage[backref]{enotez} 
+
+\usepackage[colorlinks, linkcolor = blue, citecolor = blue, filecolor = blue, urlcolor = blue]{hyperref}
+
+\let\footnote=\endnote
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\onehalfspacing
+\head
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Einleitung.} Nachdem wir im letzten Vortrag gesehen haben, wie die direkte Methode der Variationsrechnung im Beispiel des Dirichlet-Integrals auf natürliche Weise auf das Konzept der Sobolev-Räume führt, wollen wir diese Räume, insbesondere $H^{1,1}$, in diesem Vortrag noch einmal etwas besser verstehen und dafür mit bereits bekannten, klassischen Konzepten, insbesondere der absoluten Stetigkeit, in Verbindung bringen. Im gesamten Vortrag wird $I = (a,b) \subset \R$ ein offenes, beschränktes Intervall bezeichnen. Die Darstellung folgt im Wesentlichen \cite{1, Kapitel 2}.\\[.3cm]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\textbf{Erinnerung.} (Definition $H^{1,p}(I)$)\\
+Sei $p \in [1, \infty)$. Definiere 
+\begin{align}
+X^{1,p} = \lgk u \in C^1(I) \; \bigg\vert \; \norm{u}_{H^{1,p}(I)} := \lk \int_I \lk \abs{u}^p + \abs{u'}^p \rk \dd x \rk^{1/p} < \infty \rgk \subset C^1(I) 
+\end{align}
+sowie den Sobolev-Raum $H^{1,p}(I)$ als Vervollständigung\footnote{Dass $X^{1,p}$ nicht schon vollständig ist, zeigt das folgende Beispiel (siehe auch Abbildung \ref{fig:ununp}): Sei $I = (1,1) \subset \R$, $p \geq 1$ und $u_n: I \to \R$ für $n \in \N$ mit
+\begin{align*}
+u_n(x) = \begin{cases}
+1 + x, \quad & -1 < x < \frac{1}{n}\\
+-\frac{n}{2} x^2 + 1 - \frac{1}{2n}, \quad & -\frac{1}{n} \leq x \leq \frac{1}{n}\\
+1 - x, \quad & \frac{1}{n} < x < 1.
+\end{cases}
+\end{align*}
+Dann gilt $u_n \in X$ für alle $n \in \N$ mit klassischer Ableitung
+\begin{align*}
+[u_n'](x) = \begin{cases}
+1, \quad & -1 < x < \frac{1}{n}\\
+-nx, \quad & -\frac{1}{n} \leq x \leq \frac{1}{n}\\
+-1, \quad & \frac{1}{n} < x < 1.
+\end{cases}
+\end{align*}
+Punktweise konvergiert die Funktionenfolge gegen $u : I \to \R$ mit
+\begin{align*}
+u(x) = \begin{cases}
+1 + x, \quad & -1 < x < 0\\
+1 - x, \quad & 0 \leq x < 1,
+\end{cases}
+\end{align*}
+und die Folge der Ableitungen konvergiert punktweise gegen 
+\begin{align*}
+u'(x) = \begin{cases}
+1, \quad & -1 < x < 0\\
+0, \quad & x = 0 \\
+-1, \quad & 0 < x < 1.
+\end{cases}
+\end{align*}
+Es gilt auch $u_n \xrightarrow{L^p(I)} u$ und $[u_n'] \xrightarrow{L^p(I)} u'$, denn alle hier definierten Funktionen sind im Betrag durch $1$ beschränkt, und somit
+\begin{align*}
+\int_I \abs{u_n-u}^p \dd x \leq \frac{2}{n} \cdot 2^p \xrightarrow{n \to \infty} 0, \quad \int_I \abs{[u_n']-u'}^p \dd x \leq \frac{2}{n} \cdot 2^p \xrightarrow{n \to \infty} 0,
+\end{align*}
+also auch $u_n \xrightarrow{H^{1,p}(I)} u$, aber $u \not \in C^1(I)$ und damit $u \not \in X^{1,p}$.
+\begin{figure}
+\centering
+	\begin{subfigure}[t]{0.49 \textwidth}
+	\vskip 0pt
+		\centering
+		\includegraphics[width=1\linewidth]{un}
+		\caption{$u_n$ und Grenzfunktion $u$.}
+		\label{fig:un}		
+	\end{subfigure}
+	\begin{subfigure}[t]{0.49 \textwidth}
+	\vskip 0pt
+		\centering
+		\includegraphics[width=1\linewidth]{unp}
+		\caption{$u_n'$ und Grenzfunktion $u'$.}
+		\label{fig:unp}
+	\end{subfigure}
+\caption{Skizzen zur Funktionenfolge $u_n$ und deren Ableitung aus Fußnote 1.}
+\label{fig:ununp}
+\end{figure}
+} von $X^{1,p}$ unter der Norm $\norm{\cdot}_{H^{1,p}(I)}$. Damit ist $H^{1,p}(I)$ per Definition ein Banachraum mit Norm $\norm{\cdot}_{H^{1,p}(I)}$. Die Elemente von $H^{1,p}(I)$ sind Äquivalenzklassen von Cauchyfolgen, die aber wegen $\norm{\cdot}_{L^{p}(I)} \leq \norm{\cdot}_{H^{1,p}(I)}$ und der Vollständigkeit von $L^p(I)$ auch als Elemente von $L^p(I)$ aufgefasst werden können. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark} (Schwache Differenzierbarkeit) \label{rem:wdiff}\\
+Für jedes $u \in H^{1,p}(I)$ existiert per Definition eine Folge $(u_n)_{n \in \N} \subset H^{1,p}(I) \cap C^1(I)$ mit $u_n \xrightarrow{H^{1,p}(I)} u$, also existiert wegen $\norm{u_n'}_{L^p(I)} \leq \norm{u_n}_{H^{1,p}(I)}$ ein eindeutiges und von der gewählten Folge unabhängiges $v \in L^p(I)$ mit $u_n' \xrightarrow{L^p(I)} v$. Dieses $v$ ist die schwache Ableitung von $u$ in dem Sinne, dass für alle Testfunktionen $\varphi \in C^\infty_c(I)$
+\begin{align}
+\int_I u \varphi' \; \dd \lambda = - \int_I v \varphi \; \dd \lambda \label{eq:schwach}
+\end{align}
+gilt, wie sich mittels der Folge $(u_n)$ per klassischer partieller Integration und Grenzwertbildung nachvollziehen lässt:
+\begin{align}
+\int_I u_n \varphi' \; \dd \lambda = \underbrace{u_n (x) \varphi(x) \vert_{x=a}^{x=b}}_{=0, \text{ da supp\;} \varphi \text{ kp.\ in } I} - \int_I u_n' \varphi \; \dd \lambda. \label{eq:partint}
+\end{align}
+Die linke Seite von Gleichung (\ref{eq:partint}) geht dann für $n \to \infty$ gegen $ \int_I u \varphi' \; \dd \lambda$, da nach Hölder-Ungleichung
+\begin{align*}
+\abs{\int_I (u_n - u) \varphi' \; \dd \lambda} \leq \norm{u_n - u}_{L^p(I)} \norm{\varphi'}_{L^q(I)}  \xrightarrow{n \to \infty} 0.
+\end{align*}
+Die Argumentation für die rechte Seite von Gleichung (\ref{eq:partint}) ist analog. Statt $v$ schreiben wir im Folgenden $u'$ für die schwache Ableitung von $u$. Diese ist mit unserer Definition als $L^p$-Grenzwert eindeutig bis auf Nullmengen.
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} (Charakterisierung von $H^{1,p}(I)$ über schwache Differenzierbarkeit, \cite{1, Theorem 2.3}) \label{thm:wdiff}\\
+Es sind äquivalent:
+\begin{enumerate}[(i)]
+\item $u \in H^{1,p}(I)$.
+\item $u \in L^p(I)$ mit schwacher Ableitung $u' \in L^p(I)$ im Sinne von Bemerkung \ref{rem:wdiff}.
+\end{enumerate}
+\end{theorem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof} $(i) \Rightarrow (ii)$ ist mit der vorigen Bemerkung klar. Für die andere Richtung geben wir nur eine Beweisskizze und lassen dabei einige Details weg. Im Vortrag nutzen wir diese Gelegenheit, um die Notation für $\phi$ und $\calS_\varepsilon$ für später einzuführen; Details kommen dann in einfacherem Rahmen im Beweis von Lemma \ref{lemma:approx}. Die Idee ist es, $u$ (bzw.\ $u'$) zunächst $L^p$-integrierbar und schwach differenzierbar auf ganz $\R$ fortzusetzen (s.\ Abbildung \ref{fig:ext}) und anschließend durch Faltung mit einer Dirac-Folge eine Folge in $X^{1,p}$ zu konstruieren, die in $\norm{\cdot}_{H^{1,p}(I)}$ gegen $u$ konvergiert.\\
+
+\begin{figure}
+\centering
+	\begin{subfigure}[t]{0.49 \textwidth}
+	\vskip 0pt
+		\centering
+		\includegraphics[width=1\linewidth]{ext_init}
+		\caption{Ursprüngliche Funktion $u \in H^{1,p}(I)$.}
+		\label{fig:ext_init}		
+	\end{subfigure}
+	\begin{subfigure}[t]{0.49 \textwidth}
+	\vskip 0pt
+		\centering
+		\includegraphics[width=1\linewidth]{ext_eta}
+		\caption{Hilfsfunktion $\eta$.}
+		\label{fig:ext_eta}
+	\end{subfigure}\\
+		\begin{subfigure}[t]{0.49 \textwidth}
+	\vskip 0pt
+		\centering
+		\includegraphics[width=1\linewidth]{ext_mirror}
+		\caption{Fortsetzen durch Spiegeln zu $U_1$ und $U_2$.}
+		\label{fig:ext_mirror}		
+	\end{subfigure}
+	\begin{subfigure}[t]{0.49 \textwidth}
+	\vskip 0pt
+		\centering
+		\includegraphics[width=1\linewidth]{ext_final}
+		\caption{Gesamterweiterung $U$ und geglättetes $\calS_\varepsilon U$.}	
+	\label{fig:ext_final}
+	\end{subfigure}
+\caption{Skizzen zur Konstruktion im Beweis von Satz \ref{thm:wdiff}.}
+\label{fig:ext}
+\end{figure}
+
+Fixiere dazu $a',b' \in \R$ mit $a < a' < b' < b$, sowie eine Funktion $\eta \in C^1(\R)$ mit $0 \leq \eta \leq 1$, $\eta(x) = 1$ für $x < a'$ und $\eta(x) = 0$ für $x > b'$. Zerlege dann $u = \eta u + (1-\eta)u$. Dann gilt $\eta u \in L^p(a, \infty)$, da $\norm{\eta u}_{L^p(a,\infty)} \leq \norm{u}_{L^p(I)}$, und analog $(1 - \eta) u \in L^p(-\infty,b)$. Weiterhin ist $\eta u$ schwach differenzierbar mit $(\eta u)' = u' \eta + u \eta' \in L^p(a,\infty)$, da für alle $\varphi \in C^\infty_c(a,\infty)$ gilt:
+\begin{align*}
+\int_a^\infty \eta u \varphi' \; \dd x = \int_a^b \eta u \varphi' \; \dd x = \int_{a}^b u \lk \lk \eta \varphi \rk' - \eta' \varphi  \rk \; \dd x = - \int_a^b \lk u' \eta + u \eta' \rk \varphi \; \dd x,
+\end{align*}
+wobei für das erste Gleichheitszeichen genutzt wurde, dass $\eta u$ auf $(b, \infty)$ verschwindet; für das zweite Gleichheitszeichen wurde die klassischen Produktregel rückwärts angewandt, und für das dritte Gleichheitszeichen wurde genutzt, dass $\eta \varphi \in C^1_c(I)$. Das Vorgehen für $(1 - \eta) u$ ist komplett analog. Durch Spiegeln an $a$ definieren wir dann für alle $t \in \R$
+\begin{align*}
+U_1(a+t) = \begin{cases}
+(\eta u)(a+t), \quad & t \geq 0\\
+(\eta u)(a - t), \quad & t < 0
+\end{cases}
+\end{align*}
+und durch Spiegeln an $b$
+\begin{align*}
+U_2(b - t) = \begin{cases}
+((1 - \eta) u)(b - t), \quad & t \geq 0\\
+((1 - \eta) u)(b + t), \quad & t < 0
+\end{cases}
+\end{align*}
+und setzen $U = U_1 + U_2$; dann ist $U \in L^p(\R)$ (da $\norm{U}_{L^p(\R)} \leq \norm{U_1}_{L^p(\R)} + \norm{U_2}_{L^p(\R)}$ und $\norm{U_1}_{L^p(\R)} \leq 2 \norm{u}_{L^p(I)}$; $U_2$ analog) mit $U = u$ in $I$, und $U$ ist schwach differenzierbar mit Ableitung in $L^p(\R)$ (wieder $U_1$ und $U_2$ einzeln untersuchen; Integrationsgebiet in $(- \infty, a)$ und $(a, \infty)$ zerlegen und Rechnung wie oben ausführen).\\
+
+Fixiere nun eine Funktion $\phi \in C^\infty_c(\R)$ mit $\phi \geq 0$ und $\int_\R \phi \; \dd \lambda = 1$, beispielsweise konkret
+\begin{align*}
+\phi(x) = \begin{cases}
+C \exp(\frac{1}{x^2 - 1}), \quad &\abs{x} < 1\\
+0, \quad &\abs{x} \geq 1
+\end{cases}
+\end{align*}
+mit passend gewählter Konstanten $C = \lk \int_{-1}^1 \exp(1/(x^2-1)) \; \dd x \rk^{-1}$. Der Träger von $\phi$ ist dann $[-1,1]$; definiere weiterhin die folgende Umskalierung $\phi_\varepsilon \in C^\infty_c(\R)$ von $\phi$ für $\varepsilon > 0$ mit Träger $[-\varepsilon, \varepsilon]$:
+\begin{align*}
+\phi_\varepsilon(x) := \frac{1}{\varepsilon} \; \phi \lk \frac{x}{\varepsilon} \rk.
+\end{align*}
+Wir definieren dann den Faltungsoperator $\calS_\varepsilon$ via
+\begin{align*}
+(\calS_\varepsilon U)(x) = (\phi_\varepsilon * U)(x) = \int_{- \infty}^\infty U(x-y) \phi_\varepsilon(y) \; \dd y,
+\end{align*}
+dies ist für alle $x \in \R$ wohldefiniert und liefert eine Funktion in $C^\infty(\R)$, die für $\varepsilon \to 0$ fast überall und in $L^p(\R)$ gegen $U$ konvergiert (siehe beispielsweise \cite{3, Appendix C}), also auch in $L^p(I)$ gegen $u$. Analog gilt dann auch $(\calS_\varepsilon U)' = \calS_\varepsilon (U') \xrightarrow{L^p(I)} u'$, also liefert die Wahl einer Nullfolge $\varepsilon_n \to 0$ und die Definition $u_n = (\calS_{\varepsilon_n} U) \vert_I$ in der Tat eine Folge in $X^{1,p}$, die in $\norm{\cdot}_{H^{1,p}(I)}$ gegen $u$ konvergiert, also $u \in H^{1,p}(I)$.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{theorem} (Stetigkeit und klassische Differenzierbarkeit in $H^{1,1}(I)$, \cite{1, Theorem 2.2 und Theorem 2.14}) \label{thm:sobofolg} \\
+Sei $u \in H^{1,1}(I)$. Dann gilt:
+\begin{enumerate}[(i)]
+\item $u \in C^0(\bar{I})$ [genauer: in der Äquivalenzklasse von $u$ gibt es genau einen stetigen Repräsentanten; dieser ist wegen der Kompaktheit von $\bar{I}$ sogar gleichmäßig stetig].
+\item $u$ ist fast überall differenzierbar und die klassische Ableitung $[u']$ stimmt bis auf eine Nullmenge mit $u'$ überein.
+\item Für alle $x,y \in \bar{I}$ gilt
+\begin{align}
+u(x)-u(y) = \int_y^x u' \; \dd t.
+\end{align}
+\end{enumerate} 
+\end{theorem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Die Aussagen $(i)$ und $(iii)$ wurden bereits im letzten Vortrag bewiesen; der Vollständigkeit halber wiederholen wir die Beweise hier kurz:
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+$(i)$: Sei $u \in H^{1,1}(I)$ und $(u_n)_{n \in \N} \subset X^{1,p} \subset C^1(I)$ eine Folge mit $u_k \xrightarrow{H^{1,1}(I)} u$. Wir bemerken zunächst, dass jedes $u_n$ dann gleichmäßig stetig ist und sich damit stetig auf den Rand $\partial I$ von $I$ fortsetzen lässt\footnote{Es gilt: Ist $f : I = (a,b) \to \R$ gleichmäßig stetig, so lässt sich $f$ stetig auf den Rand von $I$ fortsetzen. Betrachte dazu eine Folge $(a_n)_{n \in \N} \subset (a,b)$ mit $a_n \xrightarrow{n \to \infty} a$. Dann ist $(a_n)$ eine Cauchy-Folge. Gegeben $\varepsilon > 0$, existiert dann wegen der gleichmäßigen Stetigkeit von $f$ ein $\delta > 0$, sodass für alle $x,y \in I$ mit $\abs{x - y} < \delta$ folgt, dass $\abs{f(x) - f(y)} < \varepsilon$. Insbesondere existiert also ein $n_0 \in \N$, sodass für $n,m \geq n_0$ gilt, dass $\abs{a_n - a_m} < \delta$, also auch $\abs{f(a_n) - f(a_m)} < \varepsilon$. Somit ist $\lk f(a_n) \rk_{n \in \N}$ eine Cauchy-Folge, deren Grenzwert wir optimistischerweise mit $f(a)$ bezeichnen wollen. Zu zeigen bleibt dann, dass die so fortgesetzte Funktion $f$ stetig in $a$ ist. Sei dazu also $(x_n)_{n \in \N} \subset [a,b)$ eine beliebige Folge mit $x_n \xrightarrow{n \to \infty} a$, wir wollen dann $f(x_n) \xrightarrow{n \to \infty} f(a)$ zeigen. Per Dreiecksungleichung folgt
+\begin{align*}
+\abs{f(x_n) - f(a)} \leq \abs{f(x_n) - f(a_n)} + \abs{f(a_n) - f(a)}.
+\end{align*} 
+Gegeben $\varepsilon > 0$, lässt sich natürlich per Konstruktion von $f(a)$ ein $n_0 \in \N$ finden, sodass der zweite Summand $< \varepsilon/2$ ist für $n \geq n_0$. Da $f$ gleichmäßig stetig ist auf $I$, existiert ein $\delta > 0$, sodass $\abs{f(x) - f(y)} < \varepsilon / 2$ für alle $x,y \in I$ mit $\abs{x - y} < \delta$. Für den ersten Summanden gilt
+\begin{align*}
+\abs{x_n - a_n} \leq \abs{x_n - a} + \abs{a - a_n} \xrightarrow{n \to \infty} 0,
+\end{align*}
+also lässt sich ein $n_1 \in \N$ finden, sodass $\abs{x_n - a_n} < \delta$ für $n > n_1$. Somit gilt dann für $n \geq \max \lgk n_0, n_1 \rgk$, dass $\abs{f(x_n) - f(a)} < \varepsilon$. Beachte auch, dass, falls $x_n = a$ für einige $n \in \N$, das obige Argument zur gleichmäßigen Stetigkeit von $f$ auf $I$ nicht funktioniert, aber für solche $x_n$ ist sicherlich auch $\abs{f(x_n) - f(a)} = 0 < \varepsilon$. Das Vorgehen für die rechte Intervallgrenze $b$ ist selbstverständlich vollkommen analog.}. Die gleichmäßige Stetigkeit von $u_n$ folgt dabei aus $u_n' \in L^1(I)$ und der absoluten Stetigkeit des Lebesgue-Integrals\footnote{Wir benutzen hier die folgende Aussage (siehe auch \cite{2}): Sei $A \subseteq \R^n$ messbar und $f \in L^1(A)$. Dann ist die Mengenfunktion $E \mapsto \int_E f \; \dd \lambda$ absolut stetig, d.h.\ für alle $\varepsilon > 0$ existiert ein $\delta > 0$, sodass $\abs{\int_E f \; \dd \lambda} < \varepsilon$ für alle messbaren $E \subseteq A$ mit $\lambda(E) < \delta$. Diese Aussage wenden wir hier auf $A = I \subset \R$, $f = \abs{u_n'}$ mit $\norm{u_n'}_{L^1(I)} \leq \norm{u_n'}_{H^{1,1}(I)} < \infty$ und Mengen der Form $E = (y,x)$ an. Zum Beweis der allgemeinen Aussage nehmen wir ohne Beschränkung der Allgemeinheit $f \geq 0$ an (sonst zerlege wie üblich $f = f_+ - f_-$). Zerlege für beliebiges $k \in \N_0$ die Funktion $f$ durch Stutzen in $f = g_k + h_k$ mit
+\begin{align*}
+g_k = f \cdot 1_{\lgk f \leq k \rgk} + k \cdot 1_{\lgk f > k \rgk}; \quad h_k = (f - k) \cdot 1_{\lgk f > k \rgk},
+\end{align*}
+sodass $0 \leq g_k \leq k$ sowie punktweise fast überall $0 \leq h_k \xrightarrow{k \to \infty} 0$, da $f < \infty$ fast überall. Wegen des Satzes von der monotonen Konvergenz gilt außerdem
+\begin{align*}
+\int_A h_k \; \dd \lambda \xrightarrow{k \to \infty} 0
+\end{align*}
+($(h_k)$ ist punktweise monoton fallend; wende monotone Konvergenz auf $(g_k)$ mit $0 \leq g_k = h_0 - h_k \leq g_{k+1} \xrightarrow{k \to \infty} h_0$ an mit $\lim_{k \to \infty} \int_A g_k \; \dd \lambda = \int_A h_0 \; \dd \lambda = \int_A f \; \dd \lambda = \int_A f \; \dd \lambda - \lim_{k \to \infty} \int_A h_k \; \dd \lambda$, hier geht dann $f \in L^1(A)$ ein). Sei nun $\varepsilon > 0$ gegeben, wähle dann ein festes $k \in \N_0$ mit $\int_A h_k \; \dd \lambda < \varepsilon/2$; dann ist wegen $h_k \geq 0$ auch für beliebige messbare $E \subset A$
+\begin{align*}
+\int_E h_k \; \dd \lambda \leq \frac{\varepsilon}{2}.
+\end{align*}
+Andererseits gilt aber für alle messbaren $E \subset A$ mit $\lambda(E) < \delta := \varepsilon / 2k$
+\begin{align*}
+\int_E g_k \; \dd \lambda \leq k \lambda(E) < \frac{\varepsilon}{2},
+\end{align*}
+also insgesamt $\int_E f \; \dd \lambda < \varepsilon$.
+}: Gegeben $\varepsilon > 0$, so existiert ein $\delta > 0$, sodass für alle $x,y \in I$ mit $\abs{x-y} < \delta$:
+\begin{align*}
+\abs{u_n(x) - u_n(y)} \leq \abs{ \int_{y}^x \abs{u_n'} \dd t} < \varepsilon.
+\end{align*}
+Da das so fortgesetzte $u_n$ nun also stetig auf $\bar{I}$ und differenzierbar auf $I$ ist, gilt für alle $x,y \in \bar{I}$
+\begin{align*}
+u_n(x) - u_n(y) = \int_y^x u_n'(t) \dd t
+\end{align*}
+und damit für alle $x,y \in \bar{I}$
+\begin{align*}
+\abs{u_n(x)} \leq \abs{u_n(y)} + \int_I \abs{u_n'} \; \dd t.
+\end{align*}
+Integration bezüglich $y$ liefert
+\begin{align*}
+\abs{u_n(x)} \leq \frac{1}{\lambda(I)} \int_I \abs{u_n} +  \int_I  \abs{u_n'} \leq C \norm{u_n}_{H^{1,1}(I)} \Rightarrow \norm{u_n}_{C^0(\bar{I})} \leq C \norm{u_n}_{H^1(I)}.
+\end{align*}
+Da $(u_n)$ eine Cauchy-Folge bezüglich $\norm{\cdot}_{H^{1,1}(I)}$ ist, ist somit $(u_n)$ auch eine Cauchy-Folge in $\lk C^0(\bar{I}), \norm{\cdot}_{C^0(\bar{I})}\rk$ und konvergiert wegen der Vollständigkeit dieses Raums gegen ein $\tilde{u} \in C^0(\bar{I})$ mit $\norm{u_n - \tilde{u}}_{C^0(\bar{I})} \xrightarrow{n \to \infty} 0$. Es bleibt zu zeigen, dass $u = \tilde{u}$ fast überall, was aber sofort aus der Eindeutigkeit fast überall von $L^1$-Grenzwerten folgt, da offensichtlich $\norm{u_n - u}_{L^1(I)} \leq \norm{u_n - u}_{H^{1,1}(I)} \xrightarrow{n \to \infty} 0$, aber andererseits für $u_n -\tilde{ u} \in C^0(\bar{I})$ gilt, dass $\norm{u_n - \tilde{u}}_{L^1(I)} \leq \lambda(I) \norm{u_n - \tilde{u}}_{C^0(\bar{I})} \xrightarrow{n \to \infty} 0$.
+
+$(iii)$: Seien $x,y \in \bar{I}$ beliebig und $(u_n)$ wie in $(i)$ sowie $\tilde{u}$ die stetige Repräsentation von $u$ (hier machen wir diese Unterscheidung noch, im Folgenden dann nicht mehr). Dann gilt
+\begin{align*}
+\abs{\tilde{u}(x)-\tilde{u}(y) - \int_y^x u'(t) \dd t} &\leq \abs{\tilde{u}(x)-u_n(x)} + \abs{\tilde{u}(y)-u_n(y)} + \abs{\int_y^x \abs{u' - u_n'} \; \dd t}\\
+&\leq 2 \norm{\tilde{u}-u_n}_{C^0(\bar{I})} + \int_I \abs{u'-u_n'}\\
+&\leq 2 \norm{\tilde{u}-u_n}_{C^0(\bar{I})} + \norm{u'-u_n'}_{H^{1,1}(I)} \xrightarrow{n \to \infty} 0
+\end{align*}
+
+Es bleibt noch $(ii)$ zu zeigen, also dass das gefundene $u \in C^0(\bar{I})$ tatsächlich fast überall differenzierbar ist, und dass bis auf eine Nullmenge die klassische Ableitung $[u']$ mit der schwachen Ableitung $u'$ übereinstimmt. Aus $(iii)$ folgt, dass für alle $x \in I$ und $h \in \R$ \enquote{klein genug} (sodass alle auftretenden Ausdrücke wohldefiniert sind) gilt:
+\begin{align*}
+\frac{u(x+h) - u(x)}{h} = \frac{1}{h} \int_{x}^{x+h} u' \;  \dd t.
+\end{align*}
+Nach dem Hauptsatz der Integral- und Differentialrechnung für Lebesgue-Integrale\footnote{Für weitere Details siehe \cite{2}.} geht die rechte Seite für fast alle $x \in I$ und $h \to 0$ gegen $u'(x)$. Damit existiert aber auch der Grenzwert auf der linken Seite für fast alle $x$ und stimmt natürlich per Definition mit der klassischen Ableitung $[u']$ von $u$ in $x$ überein.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+In Fußnote 1 haben wir bereits ein Beispiel einer klassisch nicht differenzierbaren Funktion in $H^{1,1}(I)$ gesehen. Hier geben wir nun Beispiele für Funktionen, die \textit{nicht} in $H^{1,1}(I)$ liegen: zunächst ein Beispiel für eine Funktion in $L^1(I)$, die fast überall klassisch differenzierbar ist, aber nicht stetig ist und damit nicht in $H^{1,1}(I)$ liegt. Außerdem geben wir ein Beispiel einer Funktion, die zusätzlich Eigenschaft $(i)$ erfüllt, aber trotzdem $(iii)$ nicht erfüllt und damit ebenfalls nicht in $H^{1,1}(I)$ liegt. 
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{example} (Heaviside-Funktion, [1, Abschnitt 2.2, Beispiel 1])\\
+Sei $I = (-1,1)$ und $H: I \to \R$ mit
+\begin{align*}
+H(x) = \begin{cases}
+0 \quad &, \text{ falls } x \leq 0,\\
+1 \quad &, \text{ falls } x > 0
+\end{cases}
+\end{align*}
+die Heaviside-Funktion. Dann gilt offenbar $H \in L^p(I)$ für alle $1 \leq p < \infty$ und $H$ ist überall außer in $x = 0$ differenzierbar mit klassischer Ableitung $\lek H' \rek = 0$. Für Testfunktionen $\varphi \in C^\infty_c(I)$ ergibt sich allerdings
+\begin{align*}
+\int_{-1}^1 H(x) \varphi'(x) \; \dd x = \int_0^1 \varphi'(x) \; \dd x = - \varphi(0) = - \lkr \delta_0, \varphi \rkr,
+\end{align*}
+also ist die distributionelle Ableitung von $H$ die Dirac-$\delta$-Distribution, die bekanntermaßen nicht regulär ist. Somit gilt $H \not \in H^{1,p}(I)$ für alle $1 \leq p < \infty$.
+\end{example}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{example} (Cantor-Funktion, [1, Abschnitt 2.2, Beispiel 2]) \label{bsp:cantor}\\
+Sei $(\delta_n)_{n \in \N}$ eine streng monoton fallende Nullfolge mit $\delta_0 = 1$. Setze $E_0 = [0,1]$, und definiere induktiv für $n \geq 0$ $E_{n+1} \subset E_n$ wie folgt: $E_n$ lasse sich als disjunkte Vereinigung von $2^n$ abgeschlossenen Intervallen der Länge $2^{-n} \delta_n$ schreiben. Entferne dann aus jedem dieser $2^n$ Intervalle in der Mitte ein offenes Intervall, sodass die resultierenden $2^{n+1}$ Intervalle jeweils eine Länge von $2^{-(n+1)} \delta_{n+1}$ haben, und setze $E_{n+1}$ als Vereinigung dieser $2^{n+1}$ Intervalle an (siehe auch Abbildung \ref{fig:cantor_set}). Diese Konstruktion ist möglich, da $0 < \delta_{n+1} < \delta_n \leq 1$, und liefert $\lambda(E_n) = \delta_n$.\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+\centering
+\includegraphics[width = .6\textwidth]{cantor_set_4}
+\caption{Skizze der Mengen $E_n$ für $n \in \lgk 0, \dots, 4 \rgk$ aus Beispiel \ref{bsp:cantor} für die Standardwahl $\delta_n = (2 / 3)^n$.}
+\label{fig:cantor_set}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Wir definieren damit nun
+\begin{align*}
+E = \bigcap_{n=0}^\infty E_n.
+\end{align*}
+Diese Menge hat Lebesgue-Maß $\lambda(E) = 0$ aufgrund der Stetigkeit von oben des Maßes, und ist nichtleer (da $0 \in E$) sowie kompakt (da alle $E_n$ abgeschlossen sind und $E$ beschränkt ist).\\
+Setze nun $g_n = \delta_n^{-1} 1_{E_n}$ und $f_n: [0,1] \to \R, \; x \mapsto \int_0^x g_n(t) \; \dd t$ für alle $n \in \N$. Dann sind alle $f_n$ stetig, monoton wachsend mit $f_n(0) = 0$ und $f_n(1) = 1$, und $f_n$ ist konstant auf dem Komplement von $E_n$ (siehe auch Abbildung \ref{fig:cantor_f}). Da für jedes der $2^n$ disjunkten Intervalle $J \subset E_n$ gilt, dass
+\begin{align*}
+\int_J g_n \; \dd \lambda = \int_J g_{n+1} \, \dd \lambda = 2^{-n},
+\end{align*}
+ergibt sich sofort
+\begin{align*}
+f_n(x) = f_{n+1}(x) \quad \forall \; x \not \in E_n.
+\end{align*}
+Ist hingegen $x \in J \subset E_n$, so ergibt sich damit
+\begin{align*}
+\abs{f_n(x) - f_{n+1}(x)} \leq \int_J \abs{g_n - g_{n+1}} \; \dd \lambda \leq 2^{-n+1}.
+\end{align*}
+Somit ist $(f_n)$ eine Cauchy-Folge (dafür Konvergenz der geometrischen Reihe nutzen) bezüglich der Supremumsnorm auf $C^0([0,1])$ und konvergiert damit gleichmäßig gegen ein (monotones) $f \in C^0([0,1])$ mit $f(0) = 0$ und $f(1) = 1$. Da $E$ eine Nullmenge ist und für alle $x \not \in E$ eine offene Umgebung existiert, auf der die Folge $(f_n)$ ab einem $n_0$ konstant ist, ist $f$ fast überall differenzierbar mit klassischer Ableitung $\lek f' \rek = 0$. Damit kann aber für $y = 0$ und $x = 1$ die Eigenschaft $(iii)$ aus Satz \ref{thm:sobofolg} für $f$ nicht gelten, und es folgt $f \not \in H^{1,1}(0,1)$.
+\end{example}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}
+\centering
+	\begin{subfigure}[t]{0.49 \textwidth}
+	\vskip 0pt
+		\centering
+		\includegraphics[width=1\linewidth]{cantor_f_0}
+		\caption{$n = 0$}
+		\label{fig:cantor_f_0}		
+	\end{subfigure}
+	\begin{subfigure}[t]{0.49 \textwidth}
+	\vskip 0pt
+		\centering
+		\includegraphics[width=1\linewidth]{cantor_f_1}
+		\caption{$n = 1$}
+		\label{fig:cantor_f_1}
+	\end{subfigure}\\
+		\begin{subfigure}[t]{0.49 \textwidth}
+	\vskip 0pt
+		\centering
+		\includegraphics[width=1\linewidth]{cantor_f_2}
+		\caption{$n = 2$}
+		\label{fig:cantor_f_2}		
+	\end{subfigure}
+	\begin{subfigure}[t]{0.49 \textwidth}
+	\vskip 0pt
+		\centering
+		\includegraphics[width=1\linewidth]{cantor_f_10}
+		\caption{$n = 10$}	
+	\label{fig:cantor_f_10}
+	\end{subfigure}
+\caption{Skizzen der Graphen von $f_n$ mit $n \in \lgk 0,1,2,10 \rgk$ aus Beispiel \ref{bsp:cantor} für die Standardwahl $\delta_n = (2 / 3)^n$.}
+\label{fig:cantor_f}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\begin{definition} (Absolute Stetigkeit, [1, Definition 2.15]) \\
+Eine Funktion $u : I \to \R$ heißt absolut stetig, wenn für alle $\varepsilon > 0$ ein $\delta > 0$ existiert, sodass für alle $N \in \N$ und alle
+\begin{align*}
+a \leq \alpha_1 < \beta_1 \leq \alpha_2 < \beta_2 \leq \dots < \alpha_N < \beta_N \leq b
+\end{align*}
+gilt:
+\begin{align}
+\sum_{i=1}^N \abs{\beta_i - \alpha_i}< \delta \quad \Rightarrow \quad \sum_{i=1}^N \abs{u(\beta_i) - u(\alpha_i)} < \varepsilon. \label{eq:absstet}
+\end{align}
+Die Menge der absolut stetigen Funktionen auf $I=(a,b)$ bezeichnen wir mit $AC(a,b)$.
+\end{definition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Jede absolut stetige Funktion ist gleichmäßig stetig ($N=1$ wählen in der Definition). Damit lässt sich jede absolut stetige Funktion stetig auf $\partial I$ fortsetzen (s.\ Fußnote 2). Außerdem ist jede Lipschitz-stetige Funktion absolut stetig, d.h. gilt für $u : I \to \R$, dass
+\begin{align*}
+\abs{u(x) - u(y)} \leq k \abs{x-y}
+\end{align*}
+mit Lipschitz-Konstante $k > 0$ für alle $x,y \in I$, so folgt mit der Wahl $\delta = \varepsilon/ k$ für gegebenes $\varepsilon > 0$, dass
+\begin{align*}
+\sum_{i=1}^N \abs{u(\beta_i) - u(\alpha_1)} \leq k \sum_{i=1}^N \abs{\beta_i - \alpha_i} < \varepsilon.
+\end{align*}
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{definition} (Totalvariation einer Funktion)\\
+Wir definieren die Totalvariation $V^b_a(u)$ einer Funktion $u:I \to \R$ als
+\begin{align}
+V^b_a(u) = \sup \sum_{i=1}^N \abs{u(x_i)-u(x_{i-1})},
+\end{align}
+wobei das Supremum über alle $N \in \N$ und alle
+\begin{align*}
+a < x_0 < x_1 < \dots < x_N < b
+\end{align*}
+gebildet wird.
+\end{definition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proposition} (Absolute Stetigkeit und Totalvariation, [1, Lemma 2.19]) \label{prop:ac} \\
+Sei $u \in C^1(a,b)$. Dann sind äquivalent:
+\begin{enumerate}[(i)]
+\item $u \in AC(a,b)$.
+\item $V^b_a(u) < \infty$.
+\item $\int_a^b \abs{u'(x)} \dd x < \infty$.
+\item Die Mengenfunktion
+\begin{align*}
+E \mapsto \int_E \abs{u'(x)} \; \dd x
+\end{align*}
+für $E \subseteq (a,b)$ messbar ist absolut stetig, d.h.\ für jedes $\varepsilon  > 0$ existiert ein $\delta > 0$ sodass
+\begin{align*}
+\int_E \abs{u'(x)} \; \dd x < \varepsilon \text{ falls } \lambda(E) < \delta.
+\end{align*}
+\end{enumerate}
+Sind $(i)$ bis $(iv)$ erfüllt, so gilt ferner $V^b_a(u) = \int_a^b \abs{u'(x)} \dd x$. Die Implikation $(i) \Rightarrow (ii)$ gilt auch, wenn $u \not \in C^1(a,b)$.
+\end{proposition}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof} Es sind 4 Folgerungen zu beweisen:
+\begin{itemize}
+\item $(i) \Rightarrow (ii)$: Sei $\varepsilon = 1$, dann existiert per Voraussetzung ein $\delta > 0$, sodass Bedingung (\ref{eq:absstet}) für dieses $\varepsilon$ gilt. Fixiere $m \in \N$ und Punkte $y_0 < y_1 < \dots < y_m$ mit $y_0 = a$, $y_m = b$ und $y_i - y_{i-1} < \delta$ für alle $i = 1, \dots, m$ (eine mögliche Wahl wäre $m = 1 + (b-a)/\delta$). Sind jetzt $N \in \N$ und $x_0, \dots, x_N \in (a,b)$ mit $a < x_0 < \dots < x_N < b$ beliebig, so definiere dazu eine neue Familie von Punkten $t_0, \dots, t_{n}$ mit $n \leq N+m-1$ durch Ergänzung der $x_j$'s durch die $y_i$'s mit $i = 1, \dots, m-1$ und Sortieren in aufsteigender Reihenfolge. Die $t_k$, $k = 0, \dots n$, lassen sich unterteilen in $m$ disjunkte Gruppen an Punkten, die jeweils im Intervall $[y_{i-1}, y_{i}]$ mit $i = 1, \dots, m$ und Länge $< \delta$ liegen. Damit können wir mit (\ref{eq:absstet}) abschätzen:
+\begin{align*}
+\sum_{j=1}^N \abs{u(x_j) - u(x_{j-1})} \leq \sum_{k=1}^n \abs{u(t_k) - u(t_{k-1})} \leq m < \infty
+\end{align*}
+Da diese Abschätzung nicht von den betrachteten $x_j$'s abhängt, folgt $V^b_a(u) \leq m < \infty$ (der Schritt $(i)\Rightarrow(ii)$ braucht also die Voraussetzung $u \in C^1(a,b)$ gar nicht!).
+\item $(ii) \Rightarrow (iii)$: Wir zeigen hier außerdem zunächst kurz $(iii) \Rightarrow (ii)$ und erhalten dabei automatisch die gesuchte  Gleichheit $V^b_a(u) = \int_a^b \abs{u'(x)} \dd x$. Für alle $a < x_0 < \dots < x_N < b$ gilt für $j = 1, \dots, N$:
+\begin{align*}
+\abs{u(x_j)-u(x_{j-1})} = \abs{\int_{x_{j-1}}^{x_j} u'(x) \dd x} \leq \int_{x_{j-1}}^{x_j} \abs{u'(x)} \dd x
+\end{align*}
+sodass
+\begin{align*}
+\sum_{j=1}^N \abs{u(x_j)-u(x_{j-1})} \leq \int_{x_0}^{x_N} \abs{u'(x)} \dd x \leq \int_a^b \abs{u'(x)} \dd x
+\end{align*}
+und damit auch
+\begin{align*}
+V^b_a(u) \leq \int_a^b \abs{u'(x)} \dd x.
+\end{align*}
+Andersherum fixieren wir zunächst $a', b' \in \R$ mit $a < a' < b' < b$. Sei $\varepsilon > 0$ beliebig. Da $u \in C^1(a,b)$, ist $u'$ gleichmäßig stetig auf $[a',b']$, und es existiert ein $\delta > 0$, sodass 
+\begin{align*}
+\abs{u'(x)-u'(y)} < \varepsilon \text{ für alle } x,y \in [a',b'] \text{ mit } \abs{x-y} < \delta.
+\end{align*}
+Wähle jetzt $a' \leq x_0 < \dots < x_N \leq b'$ mit $x_j -x_{j-1} < \delta$ für $j = 1, \dots, N$. Dann gilt für jedes $x \in [x_{j-1},x_j]$
+\begin{align*}
+u(x_j) - u(x_{j-1}) = \int_{x_{j-1}}^{x_j} u'(y) \dd y = \int_{x_{j-1}}^{x_j} \lgk u'(y) - u'(x) \rgk \dd y + (x_j-x_{j-1}) u'(x),
+\end{align*}
+also nach Umstellen nach $u'(x)$
+\begin{align*}
+\abs{u(x)} &\leq \frac{\abs{u(x_j)-u(x_{j-1})}}{x_j - x_{j-1}} + \frac{1}{x_j - x_{j-1}} \int_{x_{j-1}}^{x_j} \underbrace{\abs{u'(x)-u'(y)}}_{\leq \varepsilon} \dd y\\
+&\leq \frac{\abs{u(x_j)-u(x_{j-1})}}{x_j - x_{j-1}} + \varepsilon.
+\end{align*}
+Damit ergibt sich
+\begin{align*}
+\int_{x_0}^{x_N} \abs{u'(x)} \dd x = \sum_{j=1}^N \int_{x_{j-1}}^{x_j} \abs{u'(x)} \dd x \leq \sum_{j=1}^N \abs{u(x_j)-u(x_{j-1})} + \varepsilon (x_N-x_0) \leq V^b_a(u) + \varepsilon (b-a).
+\end{align*}
+Bilden wir das Supremum über alle solche $x_j$'s in $[a',b']$ und alle $a',b'$ mit $a < a' < b' < b$, erhalten wir so
+\begin{align*}
+\int_a^b \abs{u'(x)} \dd x \leq V^b_a(u) + \varepsilon (b-a),
+\end{align*}
+und $\varepsilon \to 0$ liefert die zu zeigende Ungleichung.
+\item $(iii) \Rightarrow (iv)$: Siehe Fußnote 3.
+\item $(iv) \Rightarrow (i)$: Sei $\varepsilon > 0$ und $\delta$ wie in der Voraussetzung. Ist dann $N \in \N$ und $a \leq \alpha_1 < \beta_1 \leq \alpha_2 < \beta_2 \leq \dots < \alpha_N < \beta_N \leq b$, sodass $\sum_{i=1}^N \abs{\beta_i - \alpha_i}< \delta$, dann liefert die Voraussetzung für $E = \bigcup_{i=1}^N (\alpha_i,\beta_i)$
+\begin{align*}
+\sum_{i=1}^N \abs{u(\beta_i)-u(\alpha_i)} \leq \sum_{i = 1}^N \int_{\alpha_i}^{\beta_i} \abs{u'(x)} \dd x = \int_E \abs{u'(x)} \dd x < \varepsilon.
+\end{align*}
+\end{itemize}
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{lemma} (Approximationslemma für $AC(a,b)$, [1, Lemma 2.21]) \label{lemma:approx} \\
+Sei $u \in AC(a,b)$. Dann existiert eine Folge von Funktionen $\lk u_n \rk_{n \in \N}$ in $C^1(a,b) \cap AC(a,b)$, sodass $u_n$ gleichmäßig gegen $u$ und $u_n'$ schwach in $L^1(a,b)$ gegen ein $v \in L^1(a,b)$ konvergiert, das darüber hinaus die schwache Ableitung von $u$ ist.
+\end{lemma}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof}
+Die Idee ist es, erneut durch Faltung mit $\phi_\varepsilon$ aus dem Beweis von Satz \ref{thm:wdiff} die gesuchte Folge zu konstruieren. Setze dazu $u \in AC(a,b)$ zunächst fort: Fixiere ein $\tau > 0$ und definiere $\bar{u}: I_\tau =(a - \tau, b + \tau) \to \R$ via 
+\begin{align*}
+\bar{u}(x) = \begin{cases}
+u(a), \quad & x < a\\
+u(x), \quad & a \leq x \leq b\\
+u(b), \quad & b < x.
+\end{cases}
+\end{align*}
+Dann gilt $\norm{\bar{u}}_{C^0(\bar{I}_\tau)} = \norm{u}_{C^0(\bar {I})} < \infty$, und $V^{b + \tau}_{a - \tau}(\bar{u}) = V^b_a(u)$ (da für jede Partition, über die bei der Totalvariation das Supremum gebildet wird, die zugehörige Summe bereits übereinstimmt), und die fortgesetzte Funktion ist weiterhin absolut stetig. Für $\varepsilon < \tau$ können wir dann auf $I$ die Faltung $\calS_\varepsilon u$ definieren durch
+\begin{align*}
+(\calS_\varepsilon u)(x) = \int_{- \varepsilon}^\varepsilon \bar{u}(x-y) \phi_\varepsilon(y) \; \dd y
+\end{align*}
+für alle $x \in I$. Diese Faltung ist wohldefiniert, da
+\begin{align*}
+\abs{(\calS_\varepsilon u)(x)} \leq \norm{u}_{C^0(\bar{I})} < \infty.
+\end{align*}
+Außerdem sind die so definierten Funktionen $\calS_\varepsilon u$ (sogar gleichgradig) absolut stetig, d.h.\ jede Funktion aus der Familie ist absolut stetig, und gegeben $\tilde{\varepsilon}$, so erfüllt jede Funktion die Bedingung (\ref{eq:absstet}) mit dem gleichen $\delta$. Sei dazu $\tilde{\varepsilon} > 0$ vorgegeben, dann existiert, da $u$ absolut stetig ist, ein $\delta > 0$, sodass für alle $N \in \N$ und alle
+\begin{align*}
+a \leq \alpha_1 < \beta_1 \leq \alpha_2 < \beta_2 \leq \dots < \alpha_N < \beta_N \leq b
+\end{align*}
+gilt:
+\begin{align*}
+\sum_{i=1}^N \abs{\beta_i - \alpha_i}< \delta \quad \Rightarrow \quad \sum_{i=1}^N \abs{u(\beta_i) - u(\alpha_i)} < \tilde{\varepsilon}.
+\end{align*}
+Für $\calS_\varepsilon u$ gilt dann aber für solche $\alpha_i$'s und $\beta_i$'s ebenfalls
+\begin{align*}
+\sum_{i=1}^N \abs{(\calS_\varepsilon u)(\beta_i) - (\calS_\varepsilon u)(\alpha_i)} \leq \int_{- \varepsilon}^\varepsilon \phi_\varepsilon(y) \underbrace{\sum_{i = 1}^N \abs{\bar{u}(\beta_i - y) - \bar{u}(\alpha_i - y)}}_{ < \tilde{\varepsilon}} \; \dd y < \tilde{\varepsilon},
+\end{align*}
+womit wir insbesondere $\calS_\varepsilon u \in AC(a,b)$ gezeigt haben. Ferner ist $\calS_\varepsilon u$ bekanntermaßen stetig differenzierbar auf $I$\footnote{Betrachte dazu für $x \in I$ und $h$ \enquote{klein genug} den Differenzenquotienten
+\begin{align*}
+\frac{(\calS_\varepsilon u)(x + h) - (\calS_\varepsilon u)(x)}{h} = \int_{a - \tau}^{b + \tau} \bar{u}(y) \frac{\phi_\varepsilon(x - y + h) - \phi_\varepsilon(x - y)}{h} \; \dd y, 
+\end{align*}
+wobei wir die per Substitution nachzurechnende Kommutativität der Faltung $f * g = g * f$ genutzt haben. Wir können dann auf beiden Seiten den Grenzwert $h \to 0$ bilden und diesen auf der rechten Seite ins Integral hineinziehen, da per Mittelwertsatz der Integrand betragsmäßig durch die integrierbare Majorante
+\begin{align*}
+g = \norm{\phi_\varepsilon'}_{C^0(\bar{I})} \abs{u}
+\end{align*}
+beschränkt ist, was dann Differenzierbarkeit zeigt mit Ableitung
+\begin{align*}
+(\calS_\varepsilon u)' = (\bar{u} * \phi_\varepsilon)' =  \bar{u} * (\phi_\varepsilon') \in C^0(I).
+\end{align*}
+}. Dass für $\varepsilon \to 0$ dann $\calS_\varepsilon u$ gleichmäßig gegen $u$ konvergiert, folgt zum Beispiel aus der gleichmäßigen Stetigkeit von $\bar{u}$: Gegeben $\tilde{\varepsilon}> 0$, so wähle $\delta > 0$, sodass für alle $x,y \in I_\tau$ mit $ \abs{x - y} < \delta$ gilt, dass $\abs{\bar{u}(x) - \bar{u}(y)} < \tilde{\varepsilon}$. Dann folgt für alle $\tilde{\delta} < \delta$ und $x \in I$:
+\begin{align*}
+\abs{(\calS_{\tilde{\delta}} u)(x) - u(x)} \leq \int_{-\tilde{\delta}}^{\tilde{\delta}} \phi_{\tilde{\delta}}(y) \underbrace{\abs{u(x- y) - u(x)}}_{< \tilde{\varepsilon}} \; \dd y < \tilde{\varepsilon}
+\end{align*}
+als gleichmäßige Abschätzung in $x$, also folgt $\calS_\varepsilon u \xrightarrow{C^0[a,b]} u$ für $\varepsilon \to 0$. Wählen wir nun eine Nullfolge $\varepsilon_n \downarrow 0$, so bleibt zu zeigen, dass für die so konstruierten $u_n = \calS_{\varepsilon_n} u \in C^1(a,b) \cap AC(a,b)$ mit $u_n \xrightarrow{C^0[a,b]} u$ die Folge der Ableitungen $(u_n')$ (beziehungsweise eine Teilfolge davon, zu der wir dann einfach übergehen können) schwach in $L^1(a,b)$ konvergiert, d.h. dass ein $v \in L^1(a,b)$ existiert, sodass für alle stetigen, linearen Funktionale $\omega \in \lk L^1(a,b) \rk^*$ gilt: $\omega(u_n') \xrightarrow{n \to \infty} \omega(v)$. Dafür nutzen wir Theorem 2.11 aus [1], das wir hier aus Zeitgründen nicht beweisen können und das besagt, dass eine hinreichende Bedingung für die Existenz einer schwach konvergenten Teilfolge von $(u_n')$ in $L^1(I)$ ist, dass 
+\begin{align*}
+\sup_{n \in \N} \norm{u_n'}_{L^1(I)} < \infty,
+\end{align*} 
+also dass die Folge gleichmäßig beschränkt ist in $L^1$, und dass die Mengenfunktionen
+\begin{align*}
+E \mapsto \int_E \abs{u_n'}, \quad E \subseteq I \text{ messbar}
+\end{align*}
+gleichgradig absolut stetig sind. Für die gleichmäßige Beschränktheit beobachten wir, dass, weil alle $u_n$ stetig differenzierbar sind, Proposition \ref{prop:ac} liefert, dass
+\begin{align*}
+&\norm{u_n'}_{L^1(a,b)} = V_a^b(u_n) = \sup \sum_{i = 1}^N \abs{u_n(x_i) - u_n(x_{i-1})} \\
+&\leq \sup \int_{-\varepsilon_n}^{\varepsilon_n} \phi_{\varepsilon_n}(y) \underbrace{ \sum_{i = 1}^N \abs{\bar{u}(x_i - y) - \bar{u}(x_{i-1} - y)} }_{\leq V^{b + \tau}_{a - \tau} (\bar{u}) = V^b_a(u)} \; \dd y \leq V^b_a(u) < \infty.
+\end{align*}
+Die gleichgradig absolute Stetigkeit der Mengenfunktionen folgt aus der gleichgradig absoluten Stetigkeit der Folge $(u_n)$ im folgenden Sinne: Sei $\varepsilon > 0$ gegeben, dann existiert ein $\delta > 0$, sodass die Bedingung (\ref{eq:absstet}) für alle $u_n$ gilt. Sei nun $E \subseteq I$ eine beliebige messbare Teilmenge mit $\lambda(E) < \delta / 2$. Dann existiert per Regularität des Lebesgue-Maßes\footnote{Zur Erinnerung: Das Lebesgue-Maß auf $\R$ wurde über das äußere Maß
+\begin{align*}
+\lambda^*(E) := \inf \lgk \sum_{k=1}^\infty \lambda(I_k) \; \Big\vert \; I_k \subset \R \text{ offene Intervalle mit } E \subseteq \bigcup_{k = 1}^\infty I_k \rgk
+\end{align*}
+per Maßerweiterungssatz von Carath{\'e}odhory konstruiert. Für Lebesgue-messbare Mengen $E$ gilt dann $\lambda(E) := \lambda^*(E)$. Ist also $\lambda(E) = \delta / 2$, so existieren per Definition abzählbar viele offene Intervalle $(I_k)_{k \in \N}$, sodass
+\begin{align*}
+\sum_{k = 1}^\infty \lambda(I_k) < \lambda(E) + \frac{\delta}{2} = \delta,
+\end{align*}
+und damit ist $O = \bigcup_{k=1}^\infty I_k$ die gesuchte offene Menge mit $E \subseteq O$ und $\lambda(O) \leq \sum_{k=1}^\infty \lambda(I_k) < \delta$.} eine offene Menge $O$ mit $E \subseteq O \subseteq I$ und $\lambda(O) < \delta$. Als offene Menge in $\R$ lässt sich $O$ als disjunkte Vereinigung höchstens abzählbar vieler, disjunkter Intervalle $J_k = (a_k, b_k) \subset I$ schreiben\footnote{Sei dazu $O \subseteq \R$ eine beliebige offene Teilmenge von $\R$. Definiere dann für jedes $q \in O \cap \Q$ die Menge
+\begin{align*}
+J_q = \bigcup_{\substack{J \text{ offenes Intervall,}\\x \in J \subseteq O}} J.
+\end{align*}
+Dann ist $J_q$ offenbar eine offene Teilmenge von $O$ und darüber hinaus ein Intervall. Ist $x \in O$ eine irrationale Zahl, so gibt es, da $O$ offen ist, ein offenes Intervall $J \subset O$, das $x$ enthält. Da $\Q$ dicht in $\R$ ist, gibt es in diesem Intervall ein $q \in O$, und damit gilt $x \in J_q$. Damit folgt
+\begin{align*}
+O = \bigcup_{q \in O \cap \Q} J_q.
+\end{align*}
+Dies ist damit also eine abzählbare Vereinigung offener Intervalle, und wir zeigen noch, dass für $p,q \in O \cap \Q$ mit $p \neq q$ entweder $I_p \cap I_q = \emptyset$ oder $I_p = I_q$ gilt (denn dann lassen sich einfach alle redundanten Intervalle aus der obigen Vereinigung entfernen und wir haben die gewünschte abzählbare Vereinigung disjunkter offener Intervalle konstruiert). Angenommen es existiert ein $x \in J_p \cap J_q$, so existieren per Definition von $J_p$ und $J_q$ offene Intervalle $J, \tilde{J} \subseteq O$ mit $p,x \in J$ und $q,x \in \tilde{J}$. Dann ist aber $J_* := J \cup \tilde{J} \subseteq O$ ein offenes Intervall, das sowohl $p$ als auch $q$ enthält. Ist nun also $y \in J_p$ beliebig, so folgt sofort $y \in J_q$, denn falls $J'$ ein offenes Intervall in $O$ ist, das $p$ und $y$ enthält, so ist $J_* \cup J'$ ein offenes Intervall in $O$, dass $q$ und $y$ enthält. Die andere Richtung $J_q \subseteq J_p$ folgt natürlich analog.
+}. Damit folgt
+\begin{align*}
+\int_E \abs{u_n'} \; \dd \lambda \leq \int_O \abs{u_n'} \; \dd \lambda = \int_{\bigcup_k J_k} \abs{u_n'} \; \dd \lambda = \sum_k \int_{J_k} \abs{u_n'} \; \dd \lambda = \sum_k \int_{a_k}^{b_k} \abs{u_n'(x)} \; \dd x = \sum_k V_{a_k}^{b_k}(u_n),
+\end{align*}
+wobei im dritten Schritt im Falle abzählbar unendlich vieler Intervalle beispielsweise der Satz von der monotonen Konvergenz auf die Funktionenfolge $(f_m)$ mit $f_m = \abs{u_n'} \cdot 1_{\bigcup_{k = 1}^m I_k}$ angewandt wurde, und im letzten Schritt Proposition \ref{prop:ac} benutzt wurde. Da $\sum_k (b_k - a_k) < \delta$, folgt dann aber für alle $n$ aus der absoluten Stetigkeit der $u_n$\footnote{Hier nutzen wir folgende Eigenschaft von absolut stetigen Funktionen: Sei $u \in AC(I)$ und $\varepsilon > 0$ gegeben sowie $\delta > 0$ so gewählt, dass Bedingung (\ref{eq:absstet}) gilt. Sind dann $J_k = (a_k, b_k)$ höchstens abzählbar viele offene, disjunkte Intervalle in $I$ mit $\sum_k (b_k - a_k) < \delta$, so gilt $\sum_k V^{b_k}_{a_k}(u) < \varepsilon$. Wir zeigen die Aussage zunächst für endlich viele Intervalle $J_k$, $k = 1, \dots, N$: Wählen wir in jedem $J_k = (a_k, b_k)$ endlich viele disjunkte Teilintervalle $J_{k,m} = (a_{k,m}, b_{k,m})$, $m = 1, \dots , M_k$, so gilt weiterhin
+\begin{align*}
+\sum_{k = 1}^N \sum_{m = 1}^{M_k} (b_{k,m} - a_{k,m}) < \delta,
+\end{align*}
+also auch
+\begin{align*}
+\sum_{k = 1}^N \sum_{m = 1}^{M_k} \abs{u(b_{k,m}) - u(a_{k,m})} < \varepsilon.
+\end{align*}
+Bildet man jeweils das Supremum über alle Teilintervalle der $J_k$, so ergibt sich damit
+\begin{align*}
+\sum_{k = 1}^N V^{b_k}_{a_k}(u) < \varepsilon.
+\end{align*}
+Sind nun $J_k$ abzählbar viele disjunkte Intervalle mit Gesamtmaß $< \delta$, so folgt die gewünschte Aussage durch Anwenden der gerade gezeigten Abschätzung auf alle Partialsummen $\sum_{k = 1}^N V^{b_k}_{a_k}(u)$.
+}
+\begin{align*}
+\int_E \abs{u_n'} \; \dd \lambda \leq \sum_k V_{a_k}^{b_k}(u_n) < \varepsilon,
+\end{align*}
+was die gleichgradig absolute Stetigkeit der Funktionen $E \mapsto \int_E \abs{u_n'}$ zeigt.\\
+
+Wir haben nun also gezeigt, dass für $u \in AC(a,b)$ eine Folge $(u_n)_{n \in \N} \subset C^1(a,b) \cap AC(a,b)$ existiert mit $u_n \xrightarrow{C^0[a,b]} u$ (also auch $u_n \xrightarrow{L^1(a,b)} u$) und $u_n' \xrightharpoonup{L^1(a,b)} v \in L^1(a,b)$. Es gilt 
+\begin{align*}
+\lk L^1(a,b) \rk^* = L^\infty(a,b)
+\end{align*}
+und damit wegen $C^\infty_c(I) \subset L^\infty(I)$ für alle $\varphi \in C^\infty_c(I)$
+\begin{align*}
+\int_I v \varphi \; \dd \lambda \xleftarrow{n \to \infty} \int_I u_n' \varphi \; \dd \lambda = - \int_I u_n \varphi' \; \dd \lambda\xrightarrow{n \to \infty} -\int_I u \varphi' \; \dd \lambda.
+\end{align*}
+Also ist $v \in L^1(a,b)$ die schwache Ableitung von $u \in L^1(a,b)$.
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\begin{theorem} (Hauptsatz über absolut stetige Funktionen und $H^{1,1}$, [1, Theorem 2.17]) \label{thm:ach}\\
+Es gilt $AC(a,b) = H^{1,1}(a,b)$.
+\end{theorem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Dabei bedeutet $AC(a,b) \subseteq H^{1,1}(a,b)$ genauer, dass jedes $u \in AC(a,b)$ fast überall eine klassische Ableitung $[u'] \in L^1(a,b)$ besitzt und dieses $[u']$ die schwache Ableitung von $u$ ist. Andersherum bedeutet $AC(a,b) \supseteq H^{1,1}(a,b)$, dass jedes $u \in H^{1,1}(a,b)$ (modulo Änderung auf einer Nullmenge) eine absolut stetige Funktion ist. Wir können damit absolut stetige Funktionen charakterisieren als fast überall (klassisch) differenzierbare Funktionen, deren Ableitung $[u']$ in $L^1$ liegt und für die der Hauptsatz der Differential- und Integralrechnung 
+\begin{align*}
+u(x) -u(y) = \int_y^x [u'(t)] \; \dd t  \quad \text{für alle } x,y \in (a,b)
+\end{align*}
+gilt. Damit sind Funktionen in $H^{1,1}$ beziehungsweise absolut stetige Funktionen genau die Stammfunktionen von $L^1$-Funktionen (denn wie wir im Beweis von Satz \ref{thm:sobofolg} gesehen haben, liefert andererseits für jedes $u \in L^1(a,b)$ das Integral auch eine absolut stetige Funktion)
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{proof} Wir zeigen beide Inklusionen:\\
+
+$H^{1,1}(a,b) \subseteq AC(a,b)$: Das folgt aus Satz \ref{thm:sobofolg} und Proposition \ref{prop:ac}. Ist $u \in H^{1,1}(a,b)$, so gilt $u' \in L^1(a,b)$ und damit ist die Mengenfunktion $E \mapsto \int_E \abs{u'} \; \dd \lambda$ nach Fußnote 3 beziehungsweise Proposition \ref{prop:ac} $(iv)$ absolut stetig. Mit Satz \ref{thm:sobofolg} $(iii)$, also der Tatsache, dass für alle $x,y \in (a,b)$ der Hauptsatz der Integral- und Differentialrechnung in der Form $u(x)-u(y) = \int_y^x u'(t)\; \dd t$ gilt, lässt sich dann der Beweis von Proposition \ref{prop:ac} $(iv) \Rightarrow (i)$ kopieren, um $u \in AC(a,b)$ zu folgern.\\
+
+$AC(a,b) \subseteq H^{1,1}(a,b)$: Das folgt sofort aus Lemma \ref{lemma:approx} und Satz \ref{thm:wdiff}. 
+\end{proof}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{remark}
+Mit Satz \ref{thm:ach} folgt, dass die Cantor-Funktion aus Beispiel \ref{bsp:cantor} nicht absolut stetig sein kann. Das können wir auch sofort sehen, da sich die Cantor-Menge als Nullmenge durch abzählbar viele offene, disjunkte Intervalle $(a_k, b_k)$ mit beliebig kleinem Gesamtmaß überdecken lässt, für die aber wegen der Monotonie der Cantor-Funktion $\sum_k \abs{f(b_k) - f(a_k)} = 1$ gilt. 
+\end{remark}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Literatur}
+\beginrefs
+\bibentry{1}{\sc G.~Buttazzo}, {\sc M.~Giaquinta} und {\sc S.~Hildebrandt}. 
+``One-dimensional Variational Problems: An Introduction''. Oxford lecture series in mathematics and its applications. {\it Clarendon Press}, 1998.
+\bibentry{2}{\sc R.~L.~Wheeden} und {\sc A.~Zygmund}.
+``Measure and Integral. An Introduction to Real Analysis''. Zweite Edition, {\it CRC Press}, 2015.
+\bibentry{3}{\sc L.~C.~Evans}.
+``Partial Differential Equations''. {\it American Mathematical Society}, 2010.
+\endrefs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\printendnotes
+\end{document}
